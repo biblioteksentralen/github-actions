@@ -1,18 +1,32 @@
-name: Setup dependecies
-env:
-  NODE_VERSION: "14" # Default runtime at Vercel since February 4th 2021
-  NPM_VERSION: "7"
+name: Setup dependencies
+description: Setup depdendencies for Libry-Content
+
+inputs:
+  nodeVersion:
+    description: 'NodeJS version'
+    required: false
+    default: '14'
+  npmVersion:
+    description: 'NPM version'
+    required: false
+    default: '7'
+  cacheName:
+    description: 'Cache name'
+    required: false
+    default: 'cache-node-modules-v3'
 
 runs:
   using: "composite"
+
   steps:
     - uses: actions/checkout@v2
-    - name: Setup Node.js ${{ env.NODE_VERSION }}
+    - name: Setup Node.js ${{ inputs.nodeVersion }}
       uses: actions/setup-node@v2
       with:
-        node-version: ${{ env.NODE_VERSION }}
-    - name: Upgrade to NPM v${{ env.NPM_VERSION }}
-      run: npm install -g npm@${{ env.NPM_VERSION }}
+        node-version: ${{ inputs.nodeVersion }}
+    - name: Upgrade to NPM v${{ inputs.npmVersion }}
+      run: npm install -g npm@${{ inputs.npmVersion }}
+      shell: bash
     - name: Cache node modules
       id: cache-node-modules
       uses: actions/cache@v2
@@ -22,9 +36,10 @@ runs:
         path: |
           ~/node_modules
           ~/**/node_modules
-        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-build-${{ inputs.cacheName }}-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-${{ inputs.cacheName }}-
     - name: Install dependencies if cache miss
       if: steps.cache-node-modules.outputs.cache-hit != 'true'
       run: npm ci && npm run postinstall
+      shell: bash
