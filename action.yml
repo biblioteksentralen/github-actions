@@ -43,3 +43,8 @@ runs:
       if: steps.cache-node-modules.outputs.cache-hit != 'true'
       run: npm ci && npm run postinstall
       shell: bash
+    - uses: rlespinasse/github-slug-action@4.0.0
+    - run: |
+        echo "E2E_DATASET=$(echo "e2e-${{ env.GITHUB_REF_SLUG }}" | head -c 20)" >> $GITHUB_ENV
+        echo "PREVIEW_DEPLOYMENT_URL=${{ env.GITHUB_REF_SLUG }}.qa.bibliotek-test.io" >> $GITHUB_ENV
+      shell: bash
