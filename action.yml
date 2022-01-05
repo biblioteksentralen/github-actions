@@ -72,7 +72,7 @@ runs:
     - name: Export Pull Request number and Jira Issue as environment variables
       if: inputs.github-token != ''
       run: |
-        echo "JIRA_ISSUE=$(echo "${{ steps.pr.outputs.prTitle }}" | grep -e '[A-Z]\+-[0-9]\+' -o)" >> $GITHUB_ENV
+        echo "JIRA_ISSUE=$(echo "${{ steps.pr.outputs.pr_title }}" | grep -e '[A-Z]\+-[0-9]\+' -o)" >> $GITHUB_ENV
         echo "PR_NUMBER=$(echo "${{ steps.pr.outputs.number }}")" >> $GITHUB_ENV
       shell: bash
 
