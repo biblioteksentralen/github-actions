@@ -22,6 +22,9 @@ outputs:
   pullRequest:
     description: "Associated GitHub Pull Request as a JSON string"
     value: ${{ steps.pr.outputs.pr }}
+  pullRequestNumber:
+    description: "Numerical identifier of associated GitHub Pull Request"
+    value: ${{ steps.pr.outputs.number }}
 runs:
   using: "composite"
 
@@ -61,8 +64,9 @@ runs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         sha: ${{ github.event.pull_request.head.sha }}
         filterOutClosed: true
-    - name: Find Jira Issue
+    - name: Export Pull Request number and Jira Issue as environment variables
       run: |
         echo "JIRA_ISSUE=$(echo "${{ steps.pr.outputs.prTitle }}" | grep -e '[A-Z]\+-[0-9]\+' -o)" >> $GITHUB_ENV
+        echo "PR_NUMBER=$(echo "${{ steps.pr.outputs.number }}")" >> $GITHUB_ENV
       shell: bash
 
