@@ -61,4 +61,8 @@ runs:
         github-token: ${{ secrets.GITHUB_TOKEN }}
         sha: ${{ github.event.pull_request.head.sha }}
         filterOutClosed: true
+    - name: Find Jira Issue
+      run: |
+        echo "JIRA_ISSUE=$(echo "${{ steps.pr.outputs.prTitle }}" | grep -e '[A-Z]\+-[0-9]\+' -o)" >> $GITHUB_ENV
+      shell: bash
 
