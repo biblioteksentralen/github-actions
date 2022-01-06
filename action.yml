@@ -14,10 +14,6 @@ inputs:
     description: 'NPM version'
     required: false
     default: '7'
-  cache-name:
-    description: 'Cache name'
-    required: false
-    default: 'cache-node-modules-v3'
   github-token:
     description: GitHub Token, used to find the PR associated with the commit.
     required: false
@@ -44,17 +40,15 @@ runs:
     - if: inputs.install-dependencies == 'true'
       id: cache-node-modules
       uses: actions/cache@v2
-      env:
-        cache-name: cache-node-modules-v3
       with:
         path: |
           ~/node_modules
           ~/**/node_modules
-        key: ${{ runner.os }}-build-${{ inputs.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
         restore-keys: |
-          ${{ runner.os }}-build-${{ inputs.cache-name }}-
+          ${{ runner.os }}-node-modules-
     - if: inputs.install-dependencies == 'true' && steps.cache-node-modules.outputs.cache-hit != 'true'
-      run: npm ci && npm run postinstall
+      run: echo "🚚 Packages have changed, need to fetch dependencies" && npm ci && npm run postinstall
       shell: bash
     - uses: rlespinasse/github-slug-action@4.0.0
     - run: |
