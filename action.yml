@@ -84,7 +84,7 @@ runs:
     # Retry once if no PR was found
     -
       if: inputs.github-token != '' && steps.pr.outputs.pr_title == ''
-      run: echo "Retrying in 15 secs..." && sleep 15
+      run: echo "Retrying in 60 secs..." && sleep 60
       shell: bash
     -
       if: inputs.github-token != '' && steps.pr.outputs.pr_title == ''
