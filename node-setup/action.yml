@@ -1,0 +1,34 @@
+name: Setup node
+description: Setup node and optionally dependencies Libry-Content
+
+inputs:
+  node-version:
+    description: "NodeJS version"
+    required: false
+    default: "14"
+  npm-version:
+    description: "NPM version"
+    required: false
+    default: "7"
+runs:
+  using: "composite"
+
+  steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2
+      with:
+        node-version: ${{ inputs.node-version }}
+    - run: npm install -g npm@${{ inputs.npm-version }}
+      shell: bash
+    - id: cache-node-modules
+      uses: actions/cache@v2
+      with:
+        path: |
+          ~/node_modules
+          ~/**/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-modules-
+    - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+      run: echo "🚚 Packages have changed, need to fetch dependencies" && npm ci && npm run postinstall
+      shell: bash

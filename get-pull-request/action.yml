@@ -1,23 +1,11 @@
-name: Setup dependencies
-description: Setup depdendencies for Libry-Content
+name: Get pull request with branch
+description: Get pull request associated with branch for Libry-Content
 
 inputs:
-  install-dependencies:
-    description: 'Install dependencies'
-    required: false
-    default: 'true'
-  node-version:
-    description: 'NodeJS version'
-    required: false
-    default: '14'
-  npm-version:
-    description: 'NPM version'
-    required: false
-    default: '7'
   github-token:
     description: GitHub Token, used to find the PR associated with the commit.
     required: true
-    default: ''
+    default: ""
 outputs:
   pull-request:
     description: "Associated GitHub Pull Request as a JSON string"
@@ -29,27 +17,6 @@ runs:
   using: "composite"
 
   steps:
-    - uses: actions/checkout@v2
-    - if: inputs.install-dependencies == 'true'
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ inputs.node-version }}
-    - if: inputs.install-dependencies == 'true'
-      run: npm install -g npm@${{ inputs.npm-version }}
-      shell: bash
-    - if: inputs.install-dependencies == 'true'
-      id: cache-node-modules
-      uses: actions/cache@v2
-      with:
-        path: |
-          ~/node_modules
-          ~/**/node_modules
-        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
-    - if: inputs.install-dependencies == 'true' && steps.cache-node-modules.outputs.cache-hit != 'true'
-      run: echo "🚚 Packages have changed, need to fetch dependencies" && npm ci && npm run postinstall
-      shell: bash
     - uses: rlespinasse/github-slug-action@4.0.0
     - name: "Get PR associated with sha ${{ github.event.pull_request.head.sha || github.sha }}"
       uses: 8BitJonny/gh-get-current-pr@1.3.0
