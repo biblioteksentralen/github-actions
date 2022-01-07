@@ -52,8 +52,10 @@ runs:
       shell: bash
     - uses: rlespinasse/github-slug-action@4.0.0
     - run: |
-        echo "E2E_DATASET=$(echo "e2e-${{ env.GITHUB_REF_SLUG }}" | head -c 20)" >> $GITHUB_ENV
-        echo "PREVIEW_DEPLOYMENT_URL=${{ env.GITHUB_REF_SLUG }}.qa.bibliotek-test.io" >> $GITHUB_ENV
+        echo "PR_BRANCH=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
+        echo "PR_BRANCH_SLUG=${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
+        echo "PR_DEPLOYMENT_URL=${{ env.GITHUB_HEAD_REF_SLUG }}.qa.bibliotek-test.io" >> $GITHUB_ENV
+        echo "E2E_DATASET=$(echo "e2e-${{ env.GITHUB_HEAD_REF_SLUG }}" | head -c 20)" >> $GITHUB_ENV
       shell: bash
     - name: "Get PR associated with sha ${{ github.event.pull_request.head.sha || github.sha }}"
       if: inputs.github-token != ''
