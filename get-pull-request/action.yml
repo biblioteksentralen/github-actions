@@ -17,7 +17,6 @@ runs:
   using: "composite"
 
   steps:
-    - uses: actions/checkout@v2
     - uses: rlespinasse/github-slug-action@4.0.0
     - name: "Get PR associated with sha ${{ github.event.pull_request.head.sha || github.sha }}"
       uses: 8BitJonny/gh-get-current-pr@1.3.0
