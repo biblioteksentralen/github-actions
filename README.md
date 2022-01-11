@@ -1,1 +1,1 @@
-Dette repoet inneholder en composite action som brukes av GitHub Actions i [Libry Content-repoet](https://github.com/biblioteksentralen/libry-content/tree/main/.github/workflows).
+Dette repoet inneholder [composite actions](https://docs.github.com/en/actions/creating-actions/creating-a-composite-action) som brukes av andre prosjekter som [Libry Content](https://github.com/biblioteksentralen/libry-content/tree/main/.github/workflows) og [Appellfaktor-registrering](https://github.com/biblioteksentralen/appellfaktor-registrering/tree/main/.github/workflows).
