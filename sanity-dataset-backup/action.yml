@@ -31,6 +31,7 @@ runs:
         fi
     - name: Export dataset
       shell: bash
+      working-directory: sanity
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
       run: npx sanity dataset export production backups/backup.tar.gz
