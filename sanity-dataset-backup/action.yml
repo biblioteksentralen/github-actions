@@ -37,12 +37,10 @@ runs:
       run: npx sanity dataset export production backups/backup.tar.gz
     - name: Upload backup.tar.gz and store for ${{ env.RETENTION_DAYS }} days
       shell: bash
-      run: |
-        echo "Storing for ${{ env.RETENTION_DAYS }} days"
-      # uses: actions/upload-artifact@v2
-      # with:
-      #   name: backup-tarball
-      #   path: sanity/backups/backup.tar.gz
-      #   # Fails the workflow if no files are found; defaults to 'warn'
-      #   if-no-files-found: error
-      #   retention-days: ${{ env.RETENTION_DAYS }}
+      uses: actions/upload-artifact@v2
+      with:
+        name: backup-tarball
+        path: sanity/backups/backup.tar.gz
+        # Fails the workflow if no files are found; defaults to 'warn'
+        if-no-files-found: error
+        retention-days: ${{ env.RETENTION_DAYS }}
