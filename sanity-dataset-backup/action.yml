@@ -30,7 +30,7 @@ runs:
         fi
     - name: Export dataset
       env:
-        SANITY_AUTH_TOKEN: ${{ secrets.SANITY_READ_TOKEN }}
+        SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
       run: npx sanity dataset export production backups/backup.tar.gz
     - name: DEBUG:Upload backup.tar.gz and store for ${{ env.RETENTION_DAYS }} days
       run: |
