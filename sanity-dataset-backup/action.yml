@@ -15,6 +15,7 @@ runs:
 
   steps:
     - name: Determine retention period
+      shell: bash
       run: |
         if [ $(date '+%A') == 'Saturday' ]; then
           if [ $(date '+%d') -le 8 ]; then
@@ -29,10 +30,12 @@ runs:
           echo "RETENTION_DAYS=14" >> $GITHUB_ENV
         fi
     - name: Export dataset
+      shell: bash
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
       run: npx sanity dataset export production backups/backup.tar.gz
     - name: Upload backup.tar.gz and store for ${{ env.RETENTION_DAYS }} days
+      shell: bash
       run: |
         echo "Storing for ${{ env.RETENTION_DAYS }} days"
       # uses: actions/upload-artifact@v2
