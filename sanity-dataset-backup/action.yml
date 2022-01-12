@@ -29,17 +29,20 @@ runs:
           # Non-saturday
           echo "RETENTION_DAYS=14" >> $GITHUB_ENV
         fi
+    - name: Set backup file name
+      run: |
+        echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
     - name: Export dataset
       shell: bash
       working-directory: sanity
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
-      run: npx sanity dataset export ${{ inputs.dataset-name }} backups/backup.tar.gz
+      run: npx sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
     - name: Upload backup.tar.gz and store for ${{ env.RETENTION_DAYS }} days
       uses: actions/upload-artifact@v2
       with:
         name: backup-tarball
-        path: sanity/backups/backup.tar.gz
+        path: sanity/backups/${{ env.BACKUP_FILE_NAME }}
         # Fails the workflow if no files are found; defaults to 'warn'
         if-no-files-found: error
         retention-days: ${{ env.RETENTION_DAYS }}
