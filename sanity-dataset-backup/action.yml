@@ -7,14 +7,13 @@ inputs:
     required: true
     default: ""
   dataset-name:
-    description: "Name of dataset of which to take backup"
+    description: "Name of dataset to back up"
     required: false
     default: "production"
 runs:
   using: "composite"
 
   steps:
-    - uses: biblioteksentralen/libry-content-gha-setup/node-setup@main
     - name: Determine retention period
       run: |
         if [ $(date '+%A') == 'Saturday' ]; then
