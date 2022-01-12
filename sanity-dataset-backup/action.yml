@@ -1,0 +1,45 @@
+name: Backup
+description: Backup Sanity dataset
+
+inputs:
+  sanity-read-token:
+    description: "Sanity token, used to export dataset"
+    required: true
+    default: ""
+  dataset-name:
+    description: "Name of dataset of which to take backup"
+    required: false
+    default: "production"
+runs:
+  using: "composite"
+
+  steps:
+    - uses: biblioteksentralen/libry-content-gha-setup/node-setup@main
+    - name: Determine retention period
+      run: |
+        if [ $(date '+%A') == 'Saturday' ]; then
+          if [ $(date '+%d') -le 8 ]; then
+            # 1st saturday of the month
+            echo "RETENTION_DAYS=90" >> $GITHUB_ENV
+          else
+            # Saturday but not 1st in the month
+            echo "RETENTION_DAYS=45" >> $GITHUB_ENV
+          fi
+        else
+          # Non-saturday
+          echo "RETENTION_DAYS=14" >> $GITHUB_ENV
+        fi
+    - name: Export dataset
+      env:
+        SANITY_AUTH_TOKEN: ${{ secrets.SANITY_READ_TOKEN }}
+      run: npx sanity dataset export production backups/backup.tar.gz
+    - name: DEBUG:Upload backup.tar.gz and store for ${{ env.RETENTION_DAYS }} days
+      run: |
+        echo "Storing for ${{ env.RETENTION_DAYS }} days"
+      # uses: actions/upload-artifact@v2
+      # with:
+      #   name: backup-tarball
+      #   path: sanity/backups/backup.tar.gz
+      #   # Fails the workflow if no files are found; defaults to 'warn'
+      #   if-no-files-found: error
+      #   retention-days: ${{ env.RETENTION_DAYS }}
