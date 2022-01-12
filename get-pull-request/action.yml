@@ -6,6 +6,10 @@ inputs:
     description: GitHub Token, used to find the PR associated with the commit.
     required: true
     default: ""
+  filter-out-closed:
+    description: Whether to ignore closed pull requests
+    required: false
+    default: true
 outputs:
   pull-request:
     description: "Associated GitHub Pull Request as a JSON string"
@@ -24,7 +28,7 @@ runs:
       with:
         github-token: ${{ inputs.github-token }}
         sha: ${{ github.event.pull_request.head.sha || github.sha }}
-        filterOutClosed: true
+        filterOutClosed: ${{ inputs.filter-out-closed }}
     - run: |
         echo "PR_NUMBER=${{ steps.pr.outputs.number }}" >> $GITHUB_ENV
         echo "PR_BRANCH=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
