@@ -38,7 +38,7 @@ runs:
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
       run: npx sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
-    - name: Upload backup.tar.gz and store for ${{ env.RETENTION_DAYS }} days
+    - name: Upload ${{ env.BACKUP_FILE_NAME }} and store for ${{ env.RETENTION_DAYS }} days
       uses: actions/upload-artifact@v2
       with:
         name: backup-tarball
