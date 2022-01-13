@@ -41,7 +41,7 @@ runs:
     - name: Upload ${{ env.BACKUP_FILE_NAME }} and store for ${{ env.RETENTION_DAYS }} days
       uses: actions/upload-artifact@v2
       with:
-        name: backup-tarball
+        name: ${{ env.BACKUP_FILE_NAME }}
         path: sanity/backups/${{ env.BACKUP_FILE_NAME }}
         # Fails the workflow if no files are found; defaults to 'warn'
         if-no-files-found: error
