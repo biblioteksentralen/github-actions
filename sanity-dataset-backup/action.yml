@@ -1,0 +1,48 @@
+name: Backup
+description: Backup Sanity dataset
+
+inputs:
+  sanity-read-token:
+    description: "Sanity token, used to export dataset"
+    required: true
+    default: ""
+  dataset-name:
+    description: "Name of dataset to back up"
+    required: false
+    default: "production"
+runs:
+  using: "composite"
+
+  steps:
+    - name: Determine retention period
+      shell: bash
+      run: |
+        if [ $(date '+%A') == 'Saturday' ]; then
+          if [ $(date '+%d') -le 8 ]; then
+            # 1st saturday of the month
+            echo "RETENTION_DAYS=90" >> $GITHUB_ENV
+          else
+            # Saturday but not 1st in the month
+            echo "RETENTION_DAYS=45" >> $GITHUB_ENV
+          fi
+        else
+          # Non-saturday
+          echo "RETENTION_DAYS=14" >> $GITHUB_ENV
+        fi
+    - name: Set backup file name
+      run: |
+        echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
+    - name: Export dataset
+      shell: bash
+      working-directory: sanity
+      env:
+        SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
+      run: npx sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
+    - name: Upload ${{ env.BACKUP_FILE_NAME }} and store for ${{ env.RETENTION_DAYS }} days
+      uses: actions/upload-artifact@v2
+      with:
+        name: ${{ env.BACKUP_FILE_NAME }}
+        path: sanity/backups/${{ env.BACKUP_FILE_NAME }}
+        # Fails the workflow if no files are found; defaults to 'warn'
+        if-no-files-found: error
+        retention-days: ${{ env.RETENTION_DAYS }}
