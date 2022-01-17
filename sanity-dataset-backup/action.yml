@@ -30,6 +30,7 @@ runs:
           echo "RETENTION_DAYS=14" >> $GITHUB_ENV
         fi
     - name: Set backup file name
+      shell: bash
       run: |
         echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
     - name: Export dataset
