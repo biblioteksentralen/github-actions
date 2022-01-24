@@ -7,7 +7,7 @@ inputs:
     required: true
     default: ""
   filter-out-closed:
-    description: Whether to ignore closed pull requests
+    description: "Whether to ignore closed pull requests. If the commit is not present in the default branch, closed pull requests cannot be found."
     required: false
     default: true
 outputs:
@@ -22,6 +22,9 @@ runs:
 
   steps:
     - uses: rlespinasse/github-slug-action@4.0.0
+
+    # Find the merged pull request that introduced the commit or open pull requests associated with the commit.
+    # Ref: https://docs.github.com/en/rest/reference/commits#list-pull-requests-associated-with-a-commit
     - name: "Get PR associated with sha ${{ github.event.pull_request.head.sha || github.sha }}"
       uses: 8BitJonny/gh-get-current-pr@1.3.0
       id: pr
@@ -29,14 +32,13 @@ runs:
         github-token: ${{ inputs.github-token }}
         sha: ${{ github.event.pull_request.head.sha || github.sha }}
         filterOutClosed: ${{ inputs.filter-out-closed }}
+
     - run: |
         echo "PR_NUMBER=${{ steps.pr.outputs.number }}" >> $GITHUB_ENV
         echo "PR_BRANCH=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
         echo "PR_BRANCH_SLUG=${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
-        echo "PR_DEPLOYMENT_URL=pr-${{ steps.pr.outputs.number }}.qa.bibliotek-test.io" >> $GITHUB_ENV
-        echo "E2E_DATASET=e2e-${{ steps.pr.outputs.number }}" >> $GITHUB_ENV
-        echo "JIRA_ISSUE=$(echo "${{ steps.pr.outputs.pr_title }}" | grep -e '[A-Z]\+-[0-9]\+' -o)" >> $GITHUB_ENV
       shell: bash
+
     - name: Show warning if no PR found
       if: steps.pr.outputs.pr_title == ''
       run: |
