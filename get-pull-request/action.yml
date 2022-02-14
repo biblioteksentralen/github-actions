@@ -9,7 +9,7 @@ inputs:
   filter-out-closed:
     description: "Whether to ignore closed pull requests. If the commit is not present in the default branch, closed pull requests cannot be found."
     required: false
-    default: true
+    default: 'true'
 outputs:
   json:
     description: "Associated GitHub Pull Request as a JSON string"
