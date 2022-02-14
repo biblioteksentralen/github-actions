@@ -19,7 +19,7 @@ outputs:
     value: ${{ steps.pr.outputs.number }}
   title:
     description: "Title of associated GitHub Pull Request"
-    value: ${{ steps.pr.outputs.title }}
+    value: ${{ steps.pr.outputs.pr_title }}
   url:
     description: "URL of associated GitHub Pull Request"
     value: ${{ steps.pr.outputs.pr_url }}
