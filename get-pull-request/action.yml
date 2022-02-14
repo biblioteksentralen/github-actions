@@ -42,8 +42,6 @@ runs:
 
     - run: |
         echo "PR_NUMBER=${{ steps.pr.outputs.number }}" >> $GITHUB_ENV
-        echo "PR_BRANCH=${{ env.GITHUB_HEAD_REF }}" >> $GITHUB_ENV
-        echo "PR_BRANCH_SLUG=${{ env.GITHUB_HEAD_REF_SLUG }}" >> $GITHUB_ENV
       shell: bash
 
     - name: Show warning if no PR found
