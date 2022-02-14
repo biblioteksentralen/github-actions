@@ -11,12 +11,19 @@ inputs:
     required: false
     default: true
 outputs:
-  pull-request:
+  json:
     description: "Associated GitHub Pull Request as a JSON string"
     value: ${{ steps.pr.outputs.pr }}
-  pull-request-number:
+  number:
     description: "Numerical identifier of associated GitHub Pull Request"
     value: ${{ steps.pr.outputs.number }}
+  title:
+    description: "Title of associated GitHub Pull Request"
+    value: ${{ steps.pr.outputs.title }}
+  url:
+    description: "URL of associated GitHub Pull Request"
+    value: ${{ steps.pr.outputs.pr_url }}
+
 runs:
   using: "composite"
 
