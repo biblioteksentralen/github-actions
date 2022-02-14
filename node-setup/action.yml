@@ -1,5 +1,5 @@
 name: Setup node
-description: Setup node and optionally dependencies Libry-Content
+description: Setup Node and NPM, then install and cache NPM dependencies.
 
 inputs:
   node-version:
@@ -12,7 +12,6 @@ inputs:
     default: "7"
 runs:
   using: "composite"
-
   steps:
     - uses: actions/checkout@v2
     - uses: actions/setup-node@v2
@@ -30,5 +29,8 @@ runs:
         restore-keys: |
           ${{ runner.os }}-node-modules-
     - if: steps.cache-node-modules.outputs.cache-hit != 'true'
-      run: echo "🚚 Packages have changed, need to fetch dependencies" && npm ci && npm run postinstall
+      run: |
+        echo "🚚 Packages have changed, need to fetch dependencies"
+        npm ci
+        npm run postinstall --if-present
       shell: bash
