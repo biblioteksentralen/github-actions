@@ -9,7 +9,7 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
-    default: "7"
+    default: "8"
 runs:
   using: "composite"
   steps:
