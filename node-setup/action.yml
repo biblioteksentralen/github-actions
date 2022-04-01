@@ -29,7 +29,7 @@ runs:
       shell: bash
     - id: cache-dependencies
       if: inputs.install-dependencies == 'true' && inputs.cache-dependencies == 'true'
-      uses: actions/cache@v2
+      uses: actions/cache@v3
       with:
         path: |
           ~/node_modules
