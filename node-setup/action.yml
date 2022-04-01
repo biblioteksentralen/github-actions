@@ -26,8 +26,6 @@ runs:
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-node-modules-
     - if: steps.cache-node-modules.outputs.cache-hit != 'true'
       run: |
         echo "🚚 Packages have changed, need to fetch dependencies"
