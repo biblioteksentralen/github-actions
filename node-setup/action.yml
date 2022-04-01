@@ -1,5 +1,5 @@
 name: Setup node
-description: Setup Node and NPM, then install and cache NPM dependencies.
+description: Setup Node and NPM, then optionally install and cache NPM dependencies.
 
 inputs:
   node-version:
@@ -10,6 +10,14 @@ inputs:
     description: "NPM version"
     required: false
     default: "8"
+  install-dependencies:
+    description: "Whether to install dependencies"
+    required: false
+    default: "true"
+  cache-dependencies:
+    description: "Whether to cache dependencies"
+    required: false
+    default: "true"
 runs:
   using: "composite"
   steps:
@@ -19,16 +27,16 @@ runs:
         node-version: ${{ inputs.node-version }}
     - run: npm install -g npm@${{ inputs.npm-version }}
       shell: bash
-    - id: cache-node-modules
+    - id: cache-dependencies
+      if: inputs.install-dependencies == 'true' && inputs.cache-dependencies == 'true'
       uses: actions/cache@v3
       with:
         path: |
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-    - if: steps.cache-node-modules.outputs.cache-hit != 'true'
+    - if: inputs.install-dependencies == 'true' && (inputs.cache-dependencies != 'true' || steps.cache-dependencies.outputs.cache-hit != 'true')
       run: |
-        echo "🚚 Packages have changed, need to fetch dependencies"
         npm ci
         npm run postinstall --if-present
       shell: bash
