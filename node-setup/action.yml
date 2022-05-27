@@ -5,7 +5,7 @@ inputs:
   node-version:
     description: "NodeJS version"
     required: false
-    default: "14"
+    default: "16"
   npm-version:
     description: "NPM version"
     required: false
