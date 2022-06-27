@@ -39,7 +39,7 @@ runs:
         echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
     - name: Export dataset
       shell: bash
-      working-directory: ${{ sanity-path }}
+      working-directory: ${{ inputs.sanity-path }}
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
       run: npx sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
@@ -47,7 +47,7 @@ runs:
       uses: actions/upload-artifact@v2
       with:
         name: ${{ env.BACKUP_FILE_NAME }}
-        path: ${{ sanity-path }}/backups/${{ env.BACKUP_FILE_NAME }}
+        path: ${{ inputs.sanity-path }}/backups/${{ env.BACKUP_FILE_NAME }}
         # Fails the workflow if no files are found; defaults to 'warn'
         if-no-files-found: error
         retention-days: ${{ env.RETENTION_DAYS }}
