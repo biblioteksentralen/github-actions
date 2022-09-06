@@ -12,8 +12,13 @@ runs:
   using: "composite"
 
   steps:
+    - name: DEBUG
+      shell: bash
+      run: |
+        echo "DEBUG"
+        pwd
+        ls
     - name: Send a message to Microsoft Teams on failure
-      if: failure()
       uses: aliencube/microsoft-teams-actions@v0.8.0
       with:
         webhook_uri: ${{ inputs.ms-teams-webhook-uri }}
