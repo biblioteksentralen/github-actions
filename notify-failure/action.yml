@@ -12,16 +12,6 @@ runs:
   using: "composite"
 
   steps:
-    - name: DEBUG
-      shell: bash
-      run: |
-        echo "DEBUG"
-        echo "---------------------"
-        echo "${{ inputs.error-message }}"
-        echo "---------------------"
-        pwd
-        echo "---------------------"
-        ls
     - name: Send a message to Microsoft Teams on failure
       uses: aliencube/microsoft-teams-actions@v0.8.0
       with:
