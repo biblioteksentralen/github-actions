@@ -1,0 +1,21 @@
+name: Notify failure
+description: Send a message to Microsoft Teams on failure
+
+inputs:
+  ms-teams-webhook-uri:
+    description: "Incoming webhook URI to Microsoft Teams"
+    required: true
+  error-message:
+    description: "Message indicating the cause of failure"
+    required: true
+runs:
+  using: "composite"
+
+  steps:
+    - name: Send a message to Microsoft Teams on failure
+      if: failure()
+      uses: aliencube/microsoft-teams-actions@v0.8.0
+      with:
+        webhook_uri: ${{ inputs.ms-teams-webhook-uri }}
+        text: >
+          ⚠️ ${{ inputs.error-message }}
