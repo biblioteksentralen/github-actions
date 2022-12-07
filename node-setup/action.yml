@@ -40,7 +40,7 @@ runs:
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
     - id: install-dependencies-without-cache
-      if: inputs.ignore-cache === 'true'
+      if: inputs.ignore-cache == 'true'
       run: npm ci
       shell: bash
     - if: inputs.install-dependencies == 'true' && (inputs.cache-dependencies != 'true' || steps.cache-dependencies.outputs.cache-hit != 'true')
