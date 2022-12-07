@@ -18,6 +18,10 @@ inputs:
     description: "Whether to cache dependencies"
     required: false
     default: "true"
+  ignore-cache:
+    description: "Install dependencies even though there is a cache"
+    required: false
+    default: "false"
 runs:
   using: "composite"
   steps:
@@ -28,13 +32,16 @@ runs:
     - run: npm install -g npm@${{ inputs.npm-version }}
       shell: bash
     - id: cache-dependencies
-      if: inputs.install-dependencies == 'true' && inputs.cache-dependencies == 'true'
+      if: inputs.install-dependencies == 'true' && inputs.cache-dependencies == 'true' && inputs.ignore-cache != 'true'
       uses: actions/cache@v3
       with:
         path: |
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+    - id: install-dependencies-without-cache
+      if: inputs.ignore-cache === 'true'
+      run: npm ci
     - if: inputs.install-dependencies == 'true' && (inputs.cache-dependencies != 'true' || steps.cache-dependencies.outputs.cache-hit != 'true')
       run: |
         npm ci
