@@ -26,21 +26,35 @@ runs:
           });
           const job = data.jobs[0];
           console.log(job)
+
+          const https = require("node:https");
+
+          console.log("Hello world");
+          await new Promise((resolve, reject) => {
+            https.get({
+              hostname: 'bibliografisk.bs.no',
+              path: '/v1/publications',
+            }, (res) => {
+              console.log(res.statusCode);
+              resolve();
+            })
+          });
+
           return job?.html_url
         result-encoding: string
     # MessageCard reference: https://learn.microsoft.com/nb-no/outlook/actionable-messages/message-card-reference
-    - name: Notify Teams on failure
-      if: failure()
-      shell: bash
-      run: >
-        curl -s -X POST ${{ inputs.webhooks-url }}
-        -H 'Content-Type: application/json; charset=utf-8' 
-        -d '{
-          "@type": "MessageCard",
-          "@context": "https://schema.org/extensions",
-          "title": "${{ inputs.title }}",
-          "text":  "${{ inputs.text }}",
-          "potentialAction": [
-            { "@type": "OpenUri", "name": "Vis logg", "targets": [{ "os": "default", "uri": "${{ steps.job-url.outputs.result }}" }] }
-          ]
-        "}'
+    # - name: Notify Teams on failure
+    #   if: failure()
+    #   shell: bash
+    #   run: >
+    #     curl -s -X POST ${{ inputs.webhooks-url }}
+    #     -H 'Content-Type: application/json; charset=utf-8' 
+    #     -d '{
+    #       "@type": "MessageCard",
+    #       "@context": "https://schema.org/extensions",
+    #       "title": "${{ inputs.title }}",
+    #       "text":  "${{ inputs.text }}",
+    #       "potentialAction": [
+    #         { "@type": "OpenUri", "name": "Vis logg", "targets": [{ "os": "default", "uri": "${{ steps.job-url.outputs.result }}" }] }
+    #       ]
+    #     "}'
