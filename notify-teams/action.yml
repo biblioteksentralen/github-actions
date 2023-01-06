@@ -36,7 +36,7 @@ runs:
           const text = `${{ inputs.text }}`;
           const logUrl = job?.html_url;
 
-          const data = JSON.stringify({
+          const postData = JSON.stringify({
             "@type": "MessageCard",
             "@context": "https://schema.org/extensions",
             title,
@@ -75,5 +75,5 @@ runs:
             req.on("error", (err) => {
               reject(err);
             });
-            req.end(data);
+            req.end(postData);
           });
