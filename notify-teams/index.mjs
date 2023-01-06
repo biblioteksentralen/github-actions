@@ -6,12 +6,15 @@ async function main() {
   const webhookUrl = core.getInput("webhooks-url");
   const title = core.getInput("title");
   const text = core.getInput("text");
+  const githubToken = core.getInput('github-token');
 
+  const octokit = github.getOctokit(githubToken);
   const { context } = github;
-  const { data } = await github.rest.actions.listJobsForWorkflowRunAttempt({
+  console.log(`GITHUB_RUN_ATTEMPT: ${process.env.GITHUB_RUN_ATTEMPT}`)
+  const { data } = await octokit.rest.actions.listJobsForWorkflowRunAttempt({
     ...context.repo,
     run_id: context.runId,
-    attempt_number: process.env.GITHUB_RUN_ATTEMPT,
+    attempt_number: parseInt(process.env.GITHUB_RUN_ATTEMPT ?? '1'),
   });
   const job = data.jobs[0];
   console.log(job);

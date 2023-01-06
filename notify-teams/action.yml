@@ -11,6 +11,9 @@ inputs:
   webhooks-url:
     description: "Webhooks URL"
     required: true
+  github-token:
+    description: "GitHub token"
+    required: true
 runs:
   using: node16
   main: ./dist/index.mjs
