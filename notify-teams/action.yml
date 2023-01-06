@@ -1,6 +1,5 @@
-name: Notify Teams on failure
-description: Notify Teams channel on job failure
-
+name: Notify Teams
+description: Notify Teams channel and include a link to the current GitHub Actions job
 inputs:
   title:
     description: "Card title"

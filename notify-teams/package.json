@@ -2,13 +2,14 @@
   "name": "notify-teams",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "private": true,
+  "main": "dist/index.mjs",
   "scripts": {
     "lint": "eslint .",
-    "prepare": "ncc build index.mjs -o dist --source-map"
+    "build": "ncc build index.mjs -o dist --source-map"
   },
   "keywords": [],
-  "author": "",
+  "author": "Biblioteksentralen",
   "license": "ISC",
   "dependencies": {
     "@actions/core": "^1.10.0",
