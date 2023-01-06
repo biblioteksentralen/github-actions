@@ -13,4 +13,4 @@ inputs:
     required: true
 runs:
   using: node16
-  main: notify-teams.mjs
+  main: ./dist/index.mjs
