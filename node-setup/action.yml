@@ -9,10 +9,6 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
-  install-dependencies:
-    description: "Whether to install dependencies"
-    required: false
-    default: "true"
 runs:
   using: "composite"
   steps:
@@ -24,7 +20,7 @@ runs:
     - if: inputs.npm-version
       run: npm install -g npm@${{ inputs.npm-version }}
       shell: bash
-    - if: inputs.install-dependencies == 'true' && steps.setup-node.outputs.cache-hit != 'true'
+    - if: steps.setup-node.outputs.cache-hit != 'true'
       run: |
         npm ci
         npm run postinstall --if-present
