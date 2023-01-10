@@ -12,15 +12,20 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - id: setup-node
-      uses: actions/setup-node@v3
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
-        cache: npm
     - if: inputs.npm-version
       run: npm install -g npm@${{ inputs.npm-version }}
       shell: bash
-    - if: steps.setup-node.outputs.cache-hit != 'true'
+    - id: cache-dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/node_modules
+          ~/**/node_modules
+        key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+    - if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npm ci
         npm run postinstall --if-present
