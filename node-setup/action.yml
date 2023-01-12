@@ -9,33 +9,23 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
-    default: "8"
-  install-dependencies:
-    description: "Whether to install dependencies"
-    required: false
-    default: "true"
-  cache-dependencies:
-    description: "Whether to cache dependencies"
-    required: false
-    default: "true"
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-node@v2
+    - uses: actions/setup-node@v3
       with:
         node-version: ${{ inputs.node-version }}
-    - run: npm install -g npm@${{ inputs.npm-version }}
+    - if: inputs.npm-version
+      run: npm install -g npm@${{ inputs.npm-version }}
       shell: bash
     - id: cache-dependencies
-      if: inputs.install-dependencies == 'true' && inputs.cache-dependencies == 'true'
       uses: actions/cache@v3
       with:
         path: |
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-    - if: inputs.install-dependencies == 'true' && (inputs.cache-dependencies != 'true' || steps.cache-dependencies.outputs.cache-hit != 'true')
+    - if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npm ci
         npm run postinstall --if-present
