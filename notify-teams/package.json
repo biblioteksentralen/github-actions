@@ -1,0 +1,22 @@
+{
+  "name": "notify-teams",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "main": "dist/index.mjs",
+  "scripts": {
+    "lint": "eslint .",
+    "build": "ncc build index.mjs -o dist --source-map"
+  },
+  "keywords": [],
+  "author": "Biblioteksentralen",
+  "license": "ISC",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^5.1.1"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.36.0",
+    "eslint": "^8.31.0"
+  }
+}
