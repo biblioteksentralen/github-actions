@@ -1,4 +1,10 @@
-Usage:
+## Development
+
+[Javascript actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)
+must be self-contained. After making changes to `index.mjs`, run `npm build` to compile the script
+and its dependencies into a single file, and commit the resulting file (together with sourcemaps).
+
+## Usage
 
 ```yaml
 name: Check notification
@@ -10,7 +16,7 @@ on:
 jobs:
   success:
     name: One with everything
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: biblioteksentralen/github-actions/notify-teams@main
         if: failure()
