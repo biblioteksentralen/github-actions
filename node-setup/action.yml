@@ -30,8 +30,9 @@ runs:
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
     - if: inputs.gc-artifact-registry-credentials
       run: |
-        echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
-        export GOOGLE_APPLICATION_CREDENTIALS=google_key.json
+        # echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
+        # export GOOGLE_APPLICATION_CREDENTIALS=google_key.json
+        export GOOGLE_APPLICATION_CREDENTIALS="${{ inputs.gc-artifact-registry-credentials }}"
         npx google-artifactregistry-auth
       shell: bash
     - run: |
