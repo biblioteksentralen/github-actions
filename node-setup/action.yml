@@ -31,11 +31,14 @@ runs:
     - if: inputs.gc-artifact-registry-credentials
       run: |
         echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
-        export GOOGLE_APPLICATION_CREDENTIALS="`cat google_key.json`"
+        export GOOGLE_APPLICATION_CREDENTIALS=google_key.json
         echo "----------------"
         echo "$GOOGLE_APPLICATION_CREDENTIALS"
         echo "----------------"
+        cat google_key.json
+        echo "----------------"
         npx google-artifactregistry-auth
+        rm google_key.json
       shell: bash
     - run: |
         # Make sure we don't install and create cache yet
