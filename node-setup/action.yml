@@ -9,6 +9,7 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
+secrets:
   gc-artifact-registry-credentials:
     description: "JSON credentials used to authenticate in Google Cloud package registry"
     required: false
@@ -28,15 +29,20 @@ runs:
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-    - if: inputs.gc-artifact-registry-credentials
-      run: |
-        echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json && export GOOGLE_APPLICATION_CREDENTIALS=google_key.json && npx google-artifactregistry-auth
-        # echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
-        # export GOOGLE_APPLICATION_CREDENTIALS=google_key.json
-        # cat google_key.json | wc
-        npx google-artifactregistry-auth
-        rm google_key.json
-      shell: bash
+    - if: secrets.gc-artifact-registry-credentials
+      name: Install gcloud CLI
+      uses: google-github-actions/setup-gcloud@v1
+    - if: secrets.gc-artifact-registry-credentials
+      id: auth
+      name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.gc-artifact-registry-credentials }}
+    - if: secrets.gc-artifact-registry-credentials
+      name: Obtain access token for Artifact Registry
+      run: npx google-artifactregistry-auth
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
     - run: |
         # Make sure we don't install and create cache yet
         exit 1
