@@ -32,13 +32,11 @@ runs:
       run: |
         echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
         export GOOGLE_APPLICATION_CREDENTIALS=google_key.json
-        sed -i.bak '1s/.*/{/' google_key.json
-        sed -i.bak '$s/.*/}/' google_key.json
-        echo "----------------"
-        cat google_key.json
-        echo "----------------"
+        # sed -i.bak '1s/.*/{/' google_key.json
+        # sed -i.bak '$s/.*/}/' google_key.json
         npx google-artifactregistry-auth
-        rm -rf google_key.json google_key.json.bak
+        rm google_key.json
+        # rm -rf google_key.json google_key.json.bak
       shell: bash
     - run: |
         # Make sure we don't install and create cache yet
