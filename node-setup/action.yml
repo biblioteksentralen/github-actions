@@ -9,6 +9,9 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
+  gc-artifact-registry-credentials:
+    description: "JSON credentials used to authenticate in Google Cloud package registry"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -25,6 +28,16 @@ runs:
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+    - if: inputs.gc-artifact-registry-credentials
+      run: |
+        echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
+        export GOOGLE_APPLICATION_CREDENTIALS=google_key.json
+        npx google-artifactregistry-auth
+      shell: bash
+    - run: |
+        # Make sure we don't install and create cache yet
+        exit 1
+      shell: bash
     - if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npm ci
