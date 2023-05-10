@@ -32,7 +32,9 @@ runs:
       run: |
         echo "${{ inputs.gc-artifact-registry-credentials }}" > google_key.json
         export GOOGLE_APPLICATION_CREDENTIALS="`cat google_key.json`"
+        echo "----------------"
         echo "$GOOGLE_APPLICATION_CREDENTIALS"
+        echo "----------------"
         npx google-artifactregistry-auth
       shell: bash
     - run: |
