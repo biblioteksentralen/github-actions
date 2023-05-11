@@ -9,7 +9,6 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
-secrets:
   gc-artifact-registry-credentials:
     description: "JSON credentials used to authenticate in Google Cloud package registry"
     required: false
