@@ -28,16 +28,16 @@ runs:
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
-    - if: secrets.gc-artifact-registry-credentials
+    - if: inputs.gc-artifact-registry-credentials
       name: Install gcloud CLI
       uses: google-github-actions/setup-gcloud@v1
-    - if: secrets.gc-artifact-registry-credentials
+    - if: inputs.gc-artifact-registry-credentials
       id: auth
       name: Authenticate to Google Cloud
       uses: google-github-actions/auth@v1
       with:
-        credentials_json: ${{ secrets.gc-artifact-registry-credentials }}
-    - if: secrets.gc-artifact-registry-credentials
+        credentials_json: ${{ inputs.gc-artifact-registry-credentials }}
+    - if: inputs.gc-artifact-registry-credentials
       name: Obtain access token for Artifact Registry
       run: npx google-artifactregistry-auth
       shell: bash
