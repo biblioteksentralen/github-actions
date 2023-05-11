@@ -43,10 +43,6 @@ runs:
       shell: bash
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
-    - run: |
-        # Make sure we don't install and create cache yet
-        exit 1
-      shell: bash
     - if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npm ci
