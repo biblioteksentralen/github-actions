@@ -40,6 +40,7 @@ runs:
     - if: secrets.gc-artifact-registry-credentials
       name: Obtain access token for Artifact Registry
       run: npx google-artifactregistry-auth
+      shell: bash
       env:
         GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
     - run: |
