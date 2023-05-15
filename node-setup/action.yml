@@ -9,6 +9,9 @@ inputs:
   npm-version:
     description: "NPM version"
     required: false
+  gc-artifact-registry-credentials:
+    description: "JSON credentials used to authenticate in Google Cloud package registry"
+    required: false
 runs:
   using: "composite"
   steps:
@@ -25,8 +28,27 @@ runs:
           ~/node_modules
           ~/**/node_modules
         key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+    - if: inputs.gc-artifact-registry-credentials
+      name: Install gcloud CLI
+      uses: google-github-actions/setup-gcloud@v1
+    - if: inputs.gc-artifact-registry-credentials
+      id: auth
+      name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ inputs.gc-artifact-registry-credentials }}
+    - if: inputs.gc-artifact-registry-credentials
+      name: Obtain access token for Artifact Registry
+      run: npx google-artifactregistry-auth
+      shell: bash
+      env:
+        GOOGLE_APPLICATION_CREDENTIALS: ${{ steps.auth.outputs.credentials_file_path }}
     - if: steps.cache-dependencies.outputs.cache-hit != 'true'
       run: |
         npm ci
         npm run postinstall --if-present
+      shell: bash
+    - if: inputs.gc-artifact-registry-credentials && failure()
+      run: |
+        echo "If Google Cloud authentication fails: make sure both root and app folder `.npmrc` files are present"
       shell: bash
