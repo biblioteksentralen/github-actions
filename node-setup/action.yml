@@ -50,7 +50,5 @@ runs:
       shell: bash
     - if: inputs.gc-artifact-registry-credentials && failure()
       run: |
-        if [ ! -f .npmrc ] || [ ! -f apps/frontend/.npmrc ];
-          echo "Make sure both root and app folder `.npmrc` files are present"
-        fi
+        echo "If Google Cloud authentication fails: make sure both root and app folder `.npmrc` files are present"
       shell: bash
