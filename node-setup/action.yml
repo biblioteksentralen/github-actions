@@ -53,3 +53,4 @@ runs:
         if [ ! -f .npmrc ] || [ ! -f apps/frontend/.npmrc ];
           echo "Make sure both root and app folder `.npmrc` files are present"
         fi
+      shell: bash
