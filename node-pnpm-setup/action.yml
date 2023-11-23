@@ -15,6 +15,7 @@ runs:
         node-version: ${{ inputs.node-version }}
         registry-url: "https://registry.npmjs.org"
     - name: Set pnpm store path
+      shell: bash
       run: echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
     - name: Cache pnpm modules
       uses: actions/cache@v3
@@ -23,4 +24,5 @@ runs:
         key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
         restore-keys: pnpm-${{ runner.os }}-
     - name: Install packages
+      shell: bash
       run: pnpm install -r --ignore-scripts
