@@ -1,0 +1,26 @@
+name: Setup node and pnpm
+description: Setup Node and pnpm, then install and cache pnpm dependencies.
+
+inputs:
+  node-version:
+    description: "NodeJS version"
+    required: false
+    default: "18"
+runs:
+  using: "composite"
+  steps:
+    - uses: pnpm/action-setup@v2
+    - uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: "https://registry.npmjs.org"
+    - name: Set pnpm store path
+      run: echo "PNPM_STORE_PATH=$(pnpm store path)" >> $GITHUB_ENV
+    - name: Cache pnpm modules
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.PNPM_STORE_PATH }}
+        key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+        restore-keys: pnpm-${{ runner.os }}-
+    - name: Install packages
+      run: pnpm install -r --ignore-scripts
