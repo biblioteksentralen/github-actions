@@ -14,6 +14,10 @@ inputs:
     description: "Path to Sanity folder"
     required: false
     default: "sanity"
+  use-pnpm:
+    description: "Use pnpm instead of npm"
+    required: false
+    default: false
 runs:
   using: "composite"
 
@@ -37,12 +41,20 @@ runs:
       shell: bash
       run: |
         echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
-    - name: Export dataset
+    - if: inputs.use-pnpm  == 'false'
+      name: Export dataset (npm)
       shell: bash
       working-directory: ${{ inputs.sanity-path }}
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
       run: npx sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
+    - if: inputs.use-pnpm  == 'true'
+      name: Export dataset (pnpm)
+      shell: bash
+      working-directory: ${{ inputs.sanity-path }}
+      env:
+        SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
+      run: pnpm exec sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
     - name: Upload ${{ env.BACKUP_FILE_NAME }} and store for ${{ env.RETENTION_DAYS }} days
       uses: actions/upload-artifact@v3
       with:
