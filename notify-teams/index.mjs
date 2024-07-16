@@ -14,8 +14,8 @@ async function main() {
   const title = core.getInput("title", { required: true });
   const text = core.getInput("text", { required: true });
   const icon = core.getInput("icon") || undefined;
-  const titleColor = core.getInput("titleColor") || undefined;
-  const textColor = core.getInput("textColor") || undefined;
+  const titleColor = core.getInput("title-color") || undefined;
+  const textColor = core.getInput("text-color") || undefined;
 
   /**
    * @type {Readonly<CardData>}

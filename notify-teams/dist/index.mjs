@@ -26685,8 +26685,8 @@ async function main() {
   const title = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("title", { required: true });
   const text = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("text", { required: true });
   const icon = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("icon") || undefined;
-  const titleColor = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("titleColor") || undefined;
-  const textColor = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("textColor") || undefined;
+  const titleColor = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("title-color") || undefined;
+  const textColor = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("text-color") || undefined;
 
   /**
    * @type {Readonly<CardData>}

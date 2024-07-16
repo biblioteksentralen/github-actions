@@ -7,13 +7,13 @@ inputs:
   title:
     description: 'Card title. Can contain Markdown'
     required: true
-  titleColor:
+  title-color:
     description: 'Optional title text color. Values: "default", "dark", "light", "accent", "good", "warning", "attention"'
     required: false
   text:
     description: 'Card text. Can contain Markdown'
     required: true
-  textColor:
+  text-color:
     description: 'Optional text color. Values: "default", "dark", "light", "accent", "good", "warning", "attention"'
     required: false
   icon:
