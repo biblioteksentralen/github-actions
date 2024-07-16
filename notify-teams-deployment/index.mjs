@@ -93,7 +93,7 @@ async function fetchGithubData(githubToken) {
   // return result.data
 
   const job = jobsData.jobs[0];
-  const pr = pullRequestsData.filter((pr) => pr.state === "open")[0];
+  const pr = pullRequestsData[0];
 
   console.log("::group::{Job details}");
   console.log(JSON.stringify(job, null, 2));
