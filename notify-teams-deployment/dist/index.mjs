@@ -31027,10 +31027,9 @@ async function main() {
   const prNumber = pr.number;
   const prUrl = pr.html_url;
 
+  const subject = `[PR #${prNumber}](${pr.html_url}) - ${prTitle}`;
   const text =
-    result === "failure"
-      ? `Deploy feilet: PR #${prNumber} - ${prTitle}`
-      : `Deployet: PR #${prNumber} - ${prTitle}`;
+    result === "failure" ? `Deploy feilet: ${subject}` : `Deployet: ${subject}`;
 
   const actions = [];
   if (logUrl) {
