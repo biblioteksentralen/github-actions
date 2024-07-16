@@ -1,4 +1,3 @@
-import https from "node:https";
 import * as core from "@actions/core";
 import * as github from "@actions/github";
 
@@ -33,47 +32,33 @@ async function main() {
       },
     ],
   });
-  await sendPostRequest(webhookUrl, postData);
+  const [err] = await sendPostRequest(webhookUrl, postData);
+  if (err) {
+    console.error(`Failed to send notification: ${err.message}`);
+  }
 }
 
 /**
  * @param {string} webhookUrl
- * @param {string} postData
- * @returns {Promise<string>}
+ * @param {string} body
+ * @returns {Promise<[Error|undefined, number|undefined]>}
  */
-async function sendPostRequest(webhookUrl, postData) {
-  // Note to future: When upgrading to Node18, we can switch from http to fetch to simplify this method.
-  return new Promise((resolve, reject) => {
-    const req = https.request(
-      webhookUrl,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-        },
-      },
-      (res) => {
-        res.setEncoding("utf8");
-        /** @type {string} */
-        let responseBody = "";
-        res.on("data", (data) => {
-          responseBody = data;
-        });
-        res.on("end", () => {
-          if (res.statusCode && res.statusCode >= 200 && res.statusCode < 300)
-            resolve(responseBody);
-          else
-            reject(
-              new Error(`Got ${res.statusCode} response: ${responseBody}`)
-            );
-        });
-      }
-    );
-    req.on("error", (err) => {
-      reject(err);
-    });
-    req.end(postData);
+async function sendPostRequest(webhookUrl, body) {
+  const res = await fetch(webhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json; charset=utf-8",
+    },
+    body,
   });
+  return !res.ok
+    ? [
+        new Error(
+          `Got ${res.status} response from WebHook URL: ${await res.text()}`
+        ),
+        undefined,
+      ]
+    : [undefined, res.status];
 }
 
 main();
