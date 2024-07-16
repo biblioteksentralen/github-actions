@@ -1,20 +1,23 @@
 name: Notify Teams
-description: Notify Teams channel and include a link to the current GitHub Actions job
+description: Notify Teams channel
 inputs:
-  title:
-    description: "Card title"
-    required: true
-  text:
-    description: "Card text"
-    required: true
   webhooks-url:
-    description: "Webhooks URL"
+    description: 'Power Automate flow URL that we should post the card to'
     required: true
-  github-token:
-    description: "GitHub token, used to get the job URL from the GitHub API"
+  title:
+    description: 'Card title. Can contain Markdown'
     required: true
-  status:
-    description: "(Optional) Status of the job, either 'success' or 'error'"
+  titleColor:
+    description: 'Optional title text color. Values: "default", "dark", "light", "accent", "good", "warning", "attention"'
+    required: false
+  text:
+    description: 'Card text. Can contain Markdown'
+    required: true
+  textColor:
+    description: 'Optional text color. Values: "default", "dark", "light", "accent", "good", "warning", "attention"'
+    required: false
+  icon:
+    description: '(Optional) URL to icon or base64 encoded image string'
     required: false
 runs:
   using: node20

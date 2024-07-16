@@ -1,3 +1,5 @@
+# notify-teams
+
 ## Development
 
 [Javascript actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)
@@ -22,7 +24,10 @@ jobs:
         if: failure()
         with:
           title: Noe feilet
-          text: Noe feilet. Se logg for mer informasjon.
+          text: Noe feilet. [Se logg](https://url-to-more-information)
           webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI}}
-          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+### Inputs
+
+See [action.yml](action.yml) for more details.
