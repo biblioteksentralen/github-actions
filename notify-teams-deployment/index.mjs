@@ -81,7 +81,6 @@ async function fetchGithubData(githubToken) {
   const octokit = github.getOctokit(githubToken);
   const { context } = github;
   const sha = github.context.sha;
-  console.log(JSON.stringify(context, null, 2));
 
   console.log(`GITHUB_RUN_ATTEMPT: ${process.env.GITHUB_RUN_ATTEMPT}`);
   const [{ data: jobsData }, { data: pullRequestsData }] = await Promise.all([
@@ -110,7 +109,6 @@ async function fetchGithubData(githubToken) {
   console.log(JSON.stringify(pr, null, 2));
   console.log("::endgroup::");
 
-  console.debug(job);
   return { job, pr, sha };
 }
 
