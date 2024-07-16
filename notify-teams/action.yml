@@ -7,18 +7,22 @@ inputs:
   title:
     description: 'Card title. Can contain Markdown'
     required: true
-  titleColor:
-    description: 'Optional title text color. Values: "default", "dark", "light", "accent", "good", "warning", "attention"'
-    required: false
   text:
     description: 'Card text. Can contain Markdown'
     required: true
-  textColor:
-    description: 'Optional text color. Values: "default", "dark", "light", "accent", "good", "warning", "attention"'
+  type:
+    description: 'Type of alert. Currently supported values: "info", "warning", "error"'
     required: false
   icon:
-    description: '(Optional) URL to icon or base64 encoded image string'
+    description: '(Optional) Override the default icon using an URL to icon or a base64 encoded image string'
     required: false
+  link-to-github-actions-log:
+    description: 'Whether the card should include a link to the GitHub Actions log (default: "true"). If this is enabled, github-token is required.'
+    required: false
+  github-token:
+    description: 'GitHub token, used to get the URL for the current job from the GitHub API'
+    required: false
+
 runs:
   using: node20
   main: ./dist/index.mjs
