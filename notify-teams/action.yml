@@ -11,8 +11,11 @@ inputs:
     description: "Webhooks URL"
     required: true
   github-token:
-    description: "GitHub token"
+    description: "GitHub token, used to get the job URL from the GitHub API"
     required: true
+  status:
+    description: "(Optional) Status of the job, either 'success' or 'error'"
+    required: false
 runs:
   using: node20
   main: ./dist/index.mjs
