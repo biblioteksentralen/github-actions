@@ -2,9 +2,16 @@
 
 ## Development
 
-[Javascript actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action)
-must be self-contained. After making changes to `index.mjs`, run `npm build` to compile the script
-and its dependencies into a single file, and commit the resulting file (together with sourcemaps).
+After making changes to `index.mjs`, run
+
+```sh
+pnpm build
+```
+
+to compile the script and its dependencies into a single file and a sourcemap file.
+Make sure to commit both files.
+
+To learn more, see [Javascript actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action).
 
 ## Usage
 
