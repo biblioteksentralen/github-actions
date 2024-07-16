@@ -31021,8 +31021,15 @@ async function main() {
   // https://docs.github.com/en/actions/learn-github-actions/contexts#jobs-context
   const result = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("result", { required: true });
 
-  const { job, pr } = await fetchGithubData(githubToken);
+  const { job, pr, sha } = await fetchGithubData(githubToken);
   const logUrl = job?.html_url ?? undefined;
+
+  if (!pr) {
+    _actions_core__WEBPACK_IMPORTED_MODULE_0__.setFailed(
+      `Failed to find any pull requests associated with the commit ${sha}`
+    );
+    return;
+  }
   const prTitle = pr.title;
   const prNumber = pr.number;
   const prUrl = pr.html_url;
@@ -31062,6 +31069,7 @@ async function main() {
 async function fetchGithubData(githubToken) {
   const octokit = _actions_github__WEBPACK_IMPORTED_MODULE_1__.getOctokit(githubToken);
   const { context } = /*#__PURE__*/ (_actions_github__WEBPACK_IMPORTED_MODULE_1___namespace_cache || (_actions_github__WEBPACK_IMPORTED_MODULE_1___namespace_cache = __nccwpck_require__.t(_actions_github__WEBPACK_IMPORTED_MODULE_1__, 2)));
+  const sha = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha;
   console.log(JSON.stringify(context, null, 2));
 
   console.log(`GITHUB_RUN_ATTEMPT: ${process.env.GITHUB_RUN_ATTEMPT}`);
@@ -31074,7 +31082,7 @@ async function fetchGithubData(githubToken) {
     octokit.rest.repos.listPullRequestsAssociatedWithCommit({
       owner: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner,
       repo: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo,
-      commit_sha: _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.sha,
+      commit_sha: sha,
     }),
   ]);
   // core.debug(`Used url to fetch associated PRs: ${result.url}`)
@@ -31092,7 +31100,7 @@ async function fetchGithubData(githubToken) {
   console.log("::endgroup::");
 
   console.debug(job);
-  return { job, pr };
+  return { job, pr, sha };
 }
 
 /**
