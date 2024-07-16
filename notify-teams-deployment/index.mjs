@@ -32,7 +32,7 @@ async function main() {
   // https://docs.github.com/en/actions/learn-github-actions/contexts#jobs-context
   const result = core.getInput("result", { required: true });
 
-  const { job, pr, sha } = await fetchGithubData(githubToken);
+  const { job, pr, sha, attempt_number } = await fetchGithubData(githubToken);
   const logUrl = job?.html_url ?? undefined;
 
   if (!pr) {
@@ -44,16 +44,20 @@ async function main() {
   const prTitle = pr.title;
   const prNumber = pr.number;
   const prUrl = pr.html_url;
-
+  const { repo } = github.context;
+  const attempt = attempt_number > 1 ? ` (forsøk ${attempt_number})` : "";
   const subject = `[PR #${prNumber}](${pr.html_url}) - ${prTitle}`;
+  const runUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${job.run_id}/attempts/${attempt_number}`;
   const text =
-    result === "failure" ? `Deploy feilet: ${subject}` : `Deployet: ${subject}`;
+    result === "failure"
+      ? `Deploy feilet${attempt}: ${subject}`
+      : `Deployet${attempt}: ${subject}`;
 
   const actions = [];
   if (logUrl) {
     actions.push({
       title: "Vis logg",
-      url: logUrl,
+      url: runUrl,
     });
   }
   if (prUrl) {
@@ -83,11 +87,12 @@ async function fetchGithubData(githubToken) {
   const sha = github.context.sha;
 
   console.log(`GITHUB_RUN_ATTEMPT: ${process.env.GITHUB_RUN_ATTEMPT}`);
+  const attempt_number = parseInt(process.env.GITHUB_RUN_ATTEMPT ?? "1");
   const [{ data: jobsData }, { data: pullRequestsData }] = await Promise.all([
     octokit.rest.actions.listJobsForWorkflowRunAttempt({
       ...context.repo,
       run_id: context.runId,
-      attempt_number: parseInt(process.env.GITHUB_RUN_ATTEMPT ?? "1"),
+      attempt_number,
     }),
     octokit.rest.repos.listPullRequestsAssociatedWithCommit({
       owner: github.context.repo.owner,
@@ -95,21 +100,19 @@ async function fetchGithubData(githubToken) {
       commit_sha: sha,
     }),
   ]);
-  // core.debug(`Used url to fetch associated PRs: ${result.url}`)
-  // return result.data
 
   const job = jobsData.jobs[0];
   const pr = pullRequestsData[0];
 
-  console.log("::group::{Job details}");
+  console.log("::group::Job details");
   console.log(JSON.stringify(job, null, 2));
   console.log("::endgroup::");
 
-  console.log("::group::{Pull request details}");
+  console.log("::group::Pull request details");
   console.log(JSON.stringify(pr, null, 2));
   console.log("::endgroup::");
 
-  return { job, pr, sha };
+  return { job, pr, sha, attempt_number };
 }
 
 /**
