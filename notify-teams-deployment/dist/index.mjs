@@ -31033,9 +31033,10 @@ async function main() {
   const prTitle = pr.title;
   const prNumber = pr.number;
   const prUrl = pr.html_url;
-
+  const { repo } = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context;
   const attempt = attempt_number > 1 ? ` (forsøk ${attempt_number})` : "";
   const subject = `[PR #${prNumber}](${pr.html_url}) - ${prTitle}`;
+  const runUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${job.run_id}/attempts/${attempt_number}`;
   const text =
     result === "failure"
       ? `Deploy feilet${attempt}: ${subject}`
@@ -31045,7 +31046,7 @@ async function main() {
   if (logUrl) {
     actions.push({
       title: "Vis logg",
-      url: logUrl,
+      url: runUrl,
     });
   }
   if (prUrl) {
