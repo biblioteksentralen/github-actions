@@ -13,6 +13,10 @@ Make sure to commit both files.
 
 To learn more, see [Javascript actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action).
 
+## Permissions
+
+- The action needs `actions: read` permission in order to call `listJobsForWorkflowRunAttempt`.
+
 ## Usage
 
 Complete workflow example:
@@ -28,6 +32,9 @@ jobs:
   success:
     name: One with everything
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: read
     steps:
       - uses: biblioteksentralen/github-actions/notify-teams@main
         if: failure()
