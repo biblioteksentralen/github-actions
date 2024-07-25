@@ -13,6 +13,11 @@ Make sure to commit both files.
 
 To learn more, see [Javascript actions](https://docs.github.com/en/actions/creating-actions/creating-a-javascript-action).
 
+## Permissions
+
+- The action needs `actions: read` permission in order to call `listJobsForWorkflowRunAttempt`.
+- The action needs `pull-requests: read` permission in order to call `listPullRequestsAssociatedWithCommit`.
+
 ## Usage
 
 The action can either be run as a step in a deploy job or as a separate job running after the deploy job.
@@ -36,6 +41,15 @@ steps:
       result: "${{ job.status }}"
 ```
 
+Make sure that the job has at least the `actions: read` permission:
+
+```yaml
+permissions:
+  contents: read
+  actions: read
+  pull-requests: read
+```
+
 ### As a separate job
 
 If running as a separate job, `result` should be set to the value of `needs.<job_id>.result` from
@@ -53,6 +67,10 @@ jobs:
     if: success() || failure()
     name: Notify Teams
     runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      actions: read
+      pull-requests: read
     needs:
       - deploy
     steps:
