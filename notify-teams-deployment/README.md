@@ -41,7 +41,7 @@ steps:
       result: "${{ job.status }}"
 ```
 
-Make sure that the job has at least the `actions: read` permission:
+Make sure that the job has at least the following permissions:
 
 ```yaml
 permissions:
