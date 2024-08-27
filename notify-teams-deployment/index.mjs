@@ -10,27 +10,32 @@ import * as github from "@actions/github";
  * @property {string} title
  * @property {string} text
  * @property {Action[]} actions
- * @property {string} result
+ * @property {boolean} isSuccess
  */
 
-const iconMap = Object.freeze({
-  // 40px font awesome times-circle icon with color #0E700E (Good)
-  success:
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAASUExURQAAABBwEA1wDQ5wDg5wDv///3hGqh4AAAAEdFJOUwBAv4BN7NoNAAAAAWJLR0QF+G/pxwAAAAd0SU1FB+gHDxI4G17Y/QAAAAAQY2FOdgAAArAAAAApAAABRAAAAABdNjLtAAAA2UlEQVQoz32S7RGDIAyGsXQA6DkAvToAVx1AJPvPVCAhJsr1/eU9vuTbGNLkvbloekHRxym2ACoOGOSTbsDKnT1AqFsXCQ9kFpTCNSJHvRgB3AiG+2uAVKACcWv5J53EtqAqZGxFO9VOxhTBPLWxPtwlJGNJP9d+V2kkGJuhGxEe6OhGhsXCRnruqoeNlL12u55j2LF4p6YdsPekph1pIGqwjtaW5GDL90x/2Zh56+k01s3TlL/6HEYr1lfDd7NIRmej1xT+naKxTA9x4HbASrGtzLdiVd4z+gGI34fq2m/uagAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyNC0wNy0xNVQxODo1NjowNyswMDowMJkeuHwAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjQtMDctMTVUMTg6NTU6NDMrMDA6MDBzcZEqAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDI0LTA3LTE1VDE4OjU2OjI3KzAwOjAw/XMmYgAAAABJRU5ErkJggg==",
+// 40px font awesome times-circle icon with color #0E700E (Good)
+const successIcon =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAASUExURQAAABBwEA1wDQ5wDg5wDv///3hGqh4AAAAEdFJOUwBAv4BN7NoNAAAAAWJLR0QF+G/pxwAAAAd0SU1FB+gHDxI4G17Y/QAAAAAQY2FOdgAAArAAAAApAAABRAAAAABdNjLtAAAA2UlEQVQoz32S7RGDIAyGsXQA6DkAvToAVx1AJPvPVCAhJsr1/eU9vuTbGNLkvbloekHRxym2ACoOGOSTbsDKnT1AqFsXCQ9kFpTCNSJHvRgB3AiG+2uAVKACcWv5J53EtqAqZGxFO9VOxhTBPLWxPtwlJGNJP9d+V2kkGJuhGxEe6OhGhsXCRnruqoeNlL12u55j2LF4p6YdsPekph1pIGqwjtaW5GDL90x/2Zh56+k01s3TlL/6HEYr1lfDd7NIRmej1xT+naKxTA9x4HbASrGtzLdiVd4z+gGI34fq2m/uagAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyNC0wNy0xNVQxODo1NjowNyswMDowMJkeuHwAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjQtMDctMTVUMTg6NTU6NDMrMDA6MDBzcZEqAAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDI0LTA3LTE1VDE4OjU2OjI3KzAwOjAw/XMmYgAAAABJRU5ErkJggg==";
 
-  // 40px wide font awesome check-circle icon with color #C8191F (Attention)
-  failure:
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAASUExURQAAAMcYIMgZH8caIMgZH////yqaCBsAAAAEdFJOUwBAv4BN7NoNAAAAAWJLR0QF+G/pxwAAAAd0SU1FB+gHDxQgOpQnCbUAAAAQY2FOdgAAArAAAAApAAABRAAAAABdNjLtAAAA00lEQVQoz4WS4RHDIAiFpXaA2HOA9JoBcr0MECP7z9QEAcWz7fsVP8kDAedYEILrBA889ZoMW7BoHTDMlW6oysJu2EhClxYehXk0mntHde0CESeBB4WnTf6njxUohgLSCdkn0mkr+YGLAzLzxdSLd0xO4U1sgG5KpruW4dgLd4apwMiHWCvmwApTDfwDR7+bRPu4pGHx8vbyTD4Bt9A0hMZmWodi0zY5y9QzXeVFEkA/uPXbiO3W6N6M1sauw/xrFZ1XejQL7gfsLPZ9sadhl0JQ9AGj13zaFi49QQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyNC0wNy0xNVQyMDozMjo0OCswMDowMCwgWuAAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjQtMDctMTVUMjA6MzI6MTgrMDA6MDAVnew4AAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDI0LTA3LTE1VDIwOjMyOjU4KzAwOjAwxsLDHQAAAABJRU5ErkJggg==",
-});
+// 40px wide font awesome check-circle icon with color #C8191F (Attention)
+const failureIcon =
+  "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACgAAAAoBAMAAAB+0KVeAAAAIGNIUk0AAHomAACAhAAA+gAAAIDoAAB1MAAA6mAAADqYAAAXcJy6UTwAAAASUExURQAAAMcYIMgZH8caIMgZH////yqaCBsAAAAEdFJOUwBAv4BN7NoNAAAAAWJLR0QF+G/pxwAAAAd0SU1FB+gHDxQgOpQnCbUAAAAQY2FOdgAAArAAAAApAAABRAAAAABdNjLtAAAA00lEQVQoz4WS4RHDIAiFpXaA2HOA9JoBcr0MECP7z9QEAcWz7fsVP8kDAedYEILrBA889ZoMW7BoHTDMlW6oysJu2EhClxYehXk0mntHde0CESeBB4WnTf6njxUohgLSCdkn0mkr+YGLAzLzxdSLd0xO4U1sgG5KpruW4dgLd4apwMiHWCvmwApTDfwDR7+bRPu4pGHx8vbyTD4Bt9A0hMZmWodi0zY5y9QzXeVFEkA/uPXbiO3W6N6M1sauw/xrFZ1XejQL7gfsLPZ9sadhl0JQ9AGj13zaFi49QQAAACV0RVh0ZGF0ZTpjcmVhdGUAMjAyNC0wNy0xNVQyMDozMjo0OCswMDowMCwgWuAAAAAldEVYdGRhdGU6bW9kaWZ5ADIwMjQtMDctMTVUMjA6MzI6MTgrMDA6MDAVnew4AAAAKHRFWHRkYXRlOnRpbWVzdGFtcAAyMDI0LTA3LTE1VDIwOjMyOjU4KzAwOjAwxsLDHQAAAABJRU5ErkJggg==";
 
 async function main() {
   const webhookUrl = core.getInput("webhooks-url", { required: true });
   const githubToken = core.getInput("github-token", { required: true });
   const title = core.getInput("title", { required: true });
 
-  // Possible values are success, failure, cancelled, or skipped
+  // Possible values are 'success', 'failure', 'cancelled', or 'skipped'. We consider 'skipped' a
+  // failure since a job is skipped if any job it is dependent on did not succeed.
   // https://docs.github.com/en/actions/learn-github-actions/contexts#jobs-context
   const result = core.getInput("result", { required: true });
+  if (result === "cancelled") {
+    // Cancelled by a user
+    console.info("Not sending job notifications since job was cancelled");
+    return;
+  }
+  const isSuccess = result === "success";
 
   const { job, pr, sha, attempt_number } = await fetchGithubData(githubToken);
   const logUrl = job?.html_url ?? undefined;
@@ -48,10 +53,9 @@ async function main() {
   const attempt = attempt_number > 1 ? ` (forsøk ${attempt_number})` : "";
   const subject = `[PR #${prNumber}](${pr.html_url}) - ${prTitle}`;
   const runUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${job.run_id}/attempts/${attempt_number}`;
-  const text =
-    result === "success"
-      ? `Deployet${attempt}: ${subject}`
-      : `Deploy feilet${attempt}: ${subject}`;
+  const text = isSuccess
+    ? `Deployet${attempt}: ${subject}`
+    : `Deploy feilet${attempt}: ${subject}`;
 
   const actions = [];
   if (logUrl) {
@@ -70,7 +74,7 @@ async function main() {
   /**
    * @type {Readonly<CardData>}
    */
-  const cardData = Object.freeze({ title, text, result, actions });
+  const cardData = Object.freeze({ title, text, isSuccess, actions });
   const card = formatCard(cardData);
   const [err] = await sendPostRequest(webhookUrl, card);
   if (err) {
@@ -123,7 +127,7 @@ function formatCard(props) {
   /**
    * @type {string | undefined}
    */
-  const icon = props.result ? iconMap[props.result] : undefined;
+  const icon = props.isSuccess ? successIcon : failureIcon;
 
   const actions = props.actions.map((action) => ({
     type: "Action.OpenUrl",
@@ -171,12 +175,7 @@ function formatCard(props) {
                       text: props.title,
                       wrap: true,
                       weight: "bolder",
-                      color:
-                        props.result === "success"
-                          ? "good"
-                          : props.result === "failure"
-                          ? "attention"
-                          : undefined,
+                      color: props.isSuccess ? "good" : "attention",
                     },
                     {
                       type: "TextBlock",
