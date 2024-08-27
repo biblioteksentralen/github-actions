@@ -49,9 +49,9 @@ async function main() {
   const subject = `[PR #${prNumber}](${pr.html_url}) - ${prTitle}`;
   const runUrl = `https://github.com/${repo.owner}/${repo.repo}/actions/runs/${job.run_id}/attempts/${attempt_number}`;
   const text =
-    result === "failure"
-      ? `Deploy feilet${attempt}: ${subject}`
-      : `Deployet${attempt}: ${subject}`;
+    result === "success"
+      ? `Deployet${attempt}: ${subject}`
+      : `Deploy feilet${attempt}: ${subject}`;
 
   const actions = [];
   if (logUrl) {
