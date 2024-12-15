@@ -1,0 +1,16 @@
+name: Ship/show/ask-check
+description: Checks if PR is labeled with ship, show or ask
+
+runs:
+  using: "composite"
+  steps:
+    - uses: mheap/github-action-required-labels@v5
+      with:
+        mode: exactly
+        count: 1
+        labels: |
+          ship 🚀
+          show 👀
+          ask ❓
+        add_comment: true
+        message: "Denne PR-en kan ikke merges før du merker den med en av lablene: {{ provided }}"
