@@ -4,7 +4,8 @@ description: Checks if PR is labeled with ship, show or ask
 runs:
   using: "composite"
   steps:
-    - uses: mheap/github-action-required-labels@v5
+    - if: github.base_ref == 'main'
+      uses: mheap/github-action-required-labels@v5
       with:
         mode: exactly
         count: 1
@@ -14,3 +15,14 @@ runs:
           ask ❓
         add_comment: true
         message: "Denne PR-en kan ikke merges før du merker den med en av lablene: {{ provided }}"
+    - if: github.base_ref != 'main'
+      uses: mheap/github-action-required-labels@v5
+      with:
+        mode: exactly
+        count: 0
+        labels: |
+          ship 🚀
+          show 👀
+          ask ❓
+        add_comment: true
+        message: "Dette er en PR mot ${{ github.base_ref }}, ikke mot main. Den skal derfor ikke ha noen av disse lablene: {{ provided }}"
