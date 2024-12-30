@@ -14,7 +14,7 @@ runs:
           show 👀
           ask ❓
         add_comment: true
-        message: "Denne PR-en mot ${{ github.base_ref }} kan ikke merges før du merker den med en av lablene: {{ provided }}"
+        message: "Denne PR-en kan ikke merges før du merker den med en av lablene: {{ provided }}"
     - if: github.base_ref != 'main'
       uses: mheap/github-action-required-labels@v5
       with:
@@ -25,4 +25,4 @@ runs:
           show 👀
           ask ❓
         add_comment: true
-        message: "Denne PR-en mot ${{ github.base_ref }} skal derfor ikke ha noen av disse lablene: {{ provided }}"
+        message: "Dette er en PR mot ${{ github.base_ref }}, ikke mot main. Den skal derfor ikke ha noen av disse lablene: {{ provided }}"
