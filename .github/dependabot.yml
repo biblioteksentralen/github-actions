@@ -1,0 +1,16 @@
+# $schema: https://json.schemastore.org/dependabot-2.0.json
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: /
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "07:00"
+      timezone: "Europe/Oslo"
+    reviewers:
+      - "tjommy"
+      - "winsvold"
+      - "jfulse"
+      - "danmichaelo"
