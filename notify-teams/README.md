@@ -36,7 +36,7 @@ jobs:
       contents: read
       actions: read
     steps:
-      - uses: biblioteksentralen/github-actions/notify-teams@main
+      - uses: biblioteksentralen/github-actions/notify-teams@v1
         if: failure()
         with:
           webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI}}
@@ -55,7 +55,7 @@ but can omitted if you don't want to link back to the action.
 Simple notification without link back to the GitHub Actions run log:
 
 ```yaml
-- uses: biblioteksentralen/github-actions/notify-teams@main
+- uses: biblioteksentralen/github-actions/notify-teams@v1
   with:
     webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI_ALERT_CHANNEL}}
     title: My product
@@ -67,7 +67,7 @@ Simple notification without link back to the GitHub Actions run log:
 Add `github-token` in order to link back to the GitHub Actions run log:
 
 ```yaml
-- uses: biblioteksentralen/github-actions/notify-teams@main
+- uses: biblioteksentralen/github-actions/notify-teams@v1
   with:
     webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI_ALERT_CHANNEL}}
     github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -80,7 +80,7 @@ Add `github-token` in order to link back to the GitHub Actions run log:
 Add `type` to style the notification as "info", "warning" or "error"
 
 ```yaml
-- uses: biblioteksentralen/github-actions/notify-teams@main
+- uses: biblioteksentralen/github-actions/notify-teams@v1
   with:
     webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI_ALERT_CHANNEL}}
     github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -92,7 +92,7 @@ Add `type` to style the notification as "info", "warning" or "error"
 ![Simple info notification](./screenshots/info.png)
 
 ```yaml
-- uses: biblioteksentralen/github-actions/notify-teams@main
+- uses: biblioteksentralen/github-actions/notify-teams@v1
   with:
     webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI_ALERT_CHANNEL}}
     github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -104,7 +104,7 @@ Add `type` to style the notification as "info", "warning" or "error"
 ![Simple warning notification](./screenshots/warning.png)
 
 ```yaml
-- uses: biblioteksentralen/github-actions/notify-teams@main
+- uses: biblioteksentralen/github-actions/notify-teams@v1
   with:
     webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI_ALERT_CHANNEL}}
     github-token: ${{ secrets.GITHUB_TOKEN }}
