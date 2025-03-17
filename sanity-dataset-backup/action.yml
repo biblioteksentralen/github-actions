@@ -12,9 +12,18 @@ inputs:
     description: "Path to the Sanity folder within the repo"
     required: false
     default: "."
+  package-manager:
+    description: "The package manager used in the repo, either'npm' or 'pnpm'"
+    required: false
+    default: pnpm
 runs:
   using: "composite"
   steps:
+    - uses: actions/checkout@v4
+    - if: inputs.package-manager == 'pnpm'
+      uses: biblioteksentralen/github-actions/node-pnpm-setup@v1
+    - if: inputs.package-manager == 'npm'
+      uses: biblioteksentralen/github-actions/node-npm-setup@v1
     - name: Determine retention period
       shell: bash
       run: |
@@ -34,14 +43,13 @@ runs:
       shell: bash
       run: |
         echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
-    - uses: actions/checkout@v4
-    - uses: biblioteksentralen/github-actions/node-pnpm-setup@v1
     - name: Export dataset
       shell: bash
       working-directory: ${{ inputs.sanity-path }}
       env:
         SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
-      run: pnpm exec sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
+      run: >
+        ${{ inputs.package-manager == 'pnpm' && 'pnpm exec' || 'npx' }} sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
     - name: Upload ${{ env.BACKUP_FILE_NAME }} and store for ${{ env.RETENTION_DAYS }} days
       uses: actions/upload-artifact@v4
       with:
