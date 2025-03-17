@@ -1,11 +1,10 @@
 name: Setup node and pnpm
-description: Setup Node and pnpm, then install and cache pnpm dependencies.
-
+description: Setup Node and pnpm, install and cache pnpm dependencies.
 inputs:
   node-version:
     description: "NodeJS version"
     required: false
-    default: "18"
+    default: "22"
 runs:
   using: "composite"
   steps:
