@@ -22,5 +22,5 @@ jobs:
       pull-requests: write
     runs-on: ubuntu-22.04
     steps:
-      - uses: biblioteksentralen/github-actions/ship-show-ask@main
+      - uses: biblioteksentralen/github-actions/ship-show-ask@v1
 ```

@@ -26,9 +26,10 @@ jobs:
         with:
           sanity-path: apps/frontend
           sanity-read-token: ${{ secrets.SANITY_READ_TOKEN }}
+          package-manager: 'pnpm'
       # Optional, but recommended: Notify Teams channel if backup fails
       - if: failure()
-        uses: biblioteksentralen/github-actions/notify-teams@main
+        uses: biblioteksentralen/github-actions/notify-teams@v1
         with:
           webhooks-url: ${{ secrets.MS_TEAMS_WEBHOOK_URI}}
           github-token: ${{ secrets.GITHUB_TOKEN }}

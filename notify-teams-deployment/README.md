@@ -33,7 +33,7 @@ steps:
   # ... (deploy steps) ...
 
   - if: failure() || success()
-    uses: biblioteksentralen/github-actions/notify-teams-deployment@main
+    uses: biblioteksentralen/github-actions/notify-teams-deployment@v1
     with:
       title: Libry Content
       webhooks-url: "${{ secrets.MS_TEAMS_WEBHOOK_URI_DEPLOY_CHANNEL }}"
@@ -74,7 +74,7 @@ jobs:
     needs:
       - deploy
     steps:
-      - uses: biblioteksentralen/github-actions/notify-teams-deployment@main
+      - uses: biblioteksentralen/github-actions/notify-teams-deployment@v1
         with:
           title: Testy test
           webhooks-url: '${{ secrets.MS_TEAMS_WEBHOOK_URI}}'
