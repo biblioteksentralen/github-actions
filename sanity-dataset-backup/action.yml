@@ -1,26 +1,19 @@
 name: Backup
 description: Backup Sanity dataset
-
 inputs:
   sanity-read-token:
-    description: "Sanity token, used to export dataset"
+    description: "Sanity token with Viewer role, used to export dataset"
     required: true
-    default: ""
   dataset-name:
-    description: "Name of dataset to back up"
+    description: "Name of the dataset to back up"
     required: false
     default: "production"
   sanity-path:
-    description: "Path to Sanity folder"
+    description: "Path to the Sanity folder within the repo"
     required: false
-    default: "sanity"
-  use-pnpm:
-    description: "Use pnpm instead of npm"
-    required: false
-    default: false
+    default: "."
 runs:
   using: "composite"
-
   steps:
     - name: Determine retention period
       shell: bash
@@ -37,19 +30,13 @@ runs:
           # Non-saturday
           echo "RETENTION_DAYS=14" >> $GITHUB_ENV
         fi
-    - name: Set backup file name
+    - name: Determine backup file name
       shell: bash
       run: |
         echo "BACKUP_FILE_NAME=backup-${{ inputs.dataset-name }}-$(date +%Y-%m-%d).tar.gz" >> $GITHUB_ENV
-    - if: inputs.use-pnpm  == 'false'
-      name: Export dataset (npm)
-      shell: bash
-      working-directory: ${{ inputs.sanity-path }}
-      env:
-        SANITY_AUTH_TOKEN: ${{ inputs.sanity-read-token }}
-      run: npx sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
-    - if: inputs.use-pnpm  == 'true'
-      name: Export dataset (pnpm)
+    - uses: actions/checkout@v4
+    - uses: biblioteksentralen/github-actions/node-pnpm-setup@v1
+    - name: Export dataset
       shell: bash
       working-directory: ${{ inputs.sanity-path }}
       env:

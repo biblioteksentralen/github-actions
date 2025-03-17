@@ -1,7 +1,8 @@
 # sanity-dataset-backup
 
 This action exports datasets from Sanity and stores them as Github Actions artifacts that expires
-automatically after a given number of days. Please see the action itself for details.
+automatically after a given number of days. Please see the [`action.yml`](./action.yml) file itself
+for details about retention time.
 
 ## Usage
 
@@ -19,11 +20,9 @@ on:
 jobs:
   backup-dataset:
     runs-on: ubuntu-latest
-    name: Backup dataset
+    name: Backup Sanity dataset
     steps:
-      - uses: actions/checkout@v4
-      - uses: biblioteksentralen/github-actions/node-setup@main
-      - uses: biblioteksentralen/github-actions/sanity-dataset-backup@main
+      - uses: biblioteksentralen/github-actions/sanity-dataset-backup@v1
         with:
           sanity-path: apps/frontend
           sanity-read-token: ${{ secrets.SANITY_READ_TOKEN }}
@@ -38,9 +37,9 @@ jobs:
           text: Se logg for mer informasjon
 ```
 
-- Set `sanity-path` to the path of the Sanity project within the repo. Set it to `.` if
-the Sanity project is in the root folder of the repo.
-- Replace `XXXXXXXX` withe project name
+- Set `sanity-path` to the path of the Sanity project within the repo, i.e. the folder with a
+  `sanity.cli.ts` file. Can be omitted if the Sanity project is in the root folder.
+- Replace `XXXXXXXX` with the project name.
 
 Environment variables:
 
