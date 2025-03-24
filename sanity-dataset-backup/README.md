@@ -26,7 +26,8 @@ jobs:
         with:
           sanity-path: apps/frontend
           sanity-read-token: ${{ secrets.SANITY_READ_TOKEN }}
-          package-manager: 'pnpm'
+          node-version: '22'
+          package-manager: 'pnpm'  # Either 'pnpm' or 'npm'
       # Optional, but recommended: Notify Teams channel if backup fails
       - if: failure()
         uses: biblioteksentralen/github-actions/notify-teams@v1
@@ -40,6 +41,9 @@ jobs:
 
 - Set `sanity-path` to the path of the Sanity project within the repo, i.e. the folder with a
   `sanity.cli.ts` file. Can be omitted if the Sanity project is in the root folder.
+
+- Set `node-version` and `package-manager` to match what's used in the repo.
+
 - Replace `XXXXXXXX` with the project name.
 
 Environment variables:

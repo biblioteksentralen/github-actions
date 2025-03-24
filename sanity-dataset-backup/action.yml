@@ -16,14 +16,22 @@ inputs:
     description: "The package manager used in the repo, either'npm' or 'pnpm'"
     required: false
     default: pnpm
+  node-version:
+    description: "NodeJS version"
+    required: false
+    default: "22"
 runs:
   using: "composite"
   steps:
     - uses: actions/checkout@v4
     - if: inputs.package-manager == 'pnpm'
       uses: biblioteksentralen/github-actions/node-pnpm-setup@v1
+      with:
+        node-version: ${{ inputs.node-version }}
     - if: inputs.package-manager == 'npm'
       uses: biblioteksentralen/github-actions/node-npm-setup@v1
+      with:
+        node-version: ${{ inputs.node-version }}
     - name: Determine retention period
       shell: bash
       run: |
