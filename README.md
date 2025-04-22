@@ -7,5 +7,5 @@ Oversikt:
 * [notify-teams](./notify-teams/README.md) for å sende varsler til Teams
 * [notify-teams-deployment](./notify-teams-deployment/README.md) for å sende deployment-varsler til Teams
 * [node-pnpm-setup](./node-pnpm-setup/README.md) for å sette opp standardversjoner av Node og PNPM med caching
-* [node-setup](./node-setup/README.md) for å sette opp standardversjoner av Node og NPM med caching (deprecated)
+* [node-npm-setup](./node-npm-setup/README.md) for å sette opp standardversjoner av Node og NPM med caching
 * [sanity-dataset-backup](./sanity-dataset-backup/README.md) for backup fra Sanity som GitHub Actions artifacts
