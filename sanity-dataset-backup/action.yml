@@ -32,6 +32,11 @@ runs:
       uses: biblioteksentralen/github-actions/node-npm-setup@v1
       with:
         node-version: ${{ inputs.node-version }}
+    - name: Remove unecessary packages before backup to save space
+      run: |
+        sudo apt-get clean
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android
+        df -h
     - name: Determine retention period
       shell: bash
       run: |
