@@ -22,6 +22,11 @@ runs:
   using: "composite"
 
   steps:
+    - name: Cleanup before backup
+      run: |
+        sudo apt-get clean
+        sudo rm -rf /usr/share/dotnet /usr/local/lib/android
+        df -h
     - name: Determine retention period
       shell: bash
       run: |
