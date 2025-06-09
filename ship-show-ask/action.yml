@@ -4,7 +4,7 @@ description: Checks if PR is labeled with ship, show or ask
 runs:
   using: "composite"
   steps:
-    - if: github.base_ref == 'main' and github.actor != 'biblioteksentralboten'
+    - if: github.base_ref == 'main' && github.actor != 'biblioteksentralboten'
       uses: mheap/github-action-required-labels@v5
       with:
         mode: exactly
