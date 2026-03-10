@@ -66,3 +66,5 @@ runs:
         # Fails the workflow if no files are found; defaults to 'warn'
         if-no-files-found: error
         retention-days: ${{ env.RETENTION_DAYS }}
+        # Avoid re-compressing an already-gzipped file, which can corrupt binary content
+        compression-level: 0
