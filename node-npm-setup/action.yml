@@ -11,14 +11,14 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/setup-node@v4
+    - uses: actions/setup-node@v6
       with:
         node-version: ${{ inputs.node-version }}
     - if: inputs.npm-version
       run: npm install -g npm@${{ inputs.npm-version }}
       shell: bash
     - id: cache-dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: |
           ~/node_modules

@@ -23,7 +23,7 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - if: inputs.package-manager == 'pnpm'
       uses: biblioteksentralen/github-actions/node-pnpm-setup@v1
       with:
@@ -59,7 +59,7 @@ runs:
       run: >
         ${{ inputs.package-manager == 'pnpm' && 'pnpm exec' || 'npx' }} sanity dataset export ${{ inputs.dataset-name }} backups/${{ env.BACKUP_FILE_NAME }}
     - name: Upload ${{ env.BACKUP_FILE_NAME }} and store for ${{ env.RETENTION_DAYS }} days
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ env.BACKUP_FILE_NAME }}
         path: ${{ inputs.sanity-path }}/backups/${{ env.BACKUP_FILE_NAME }}
