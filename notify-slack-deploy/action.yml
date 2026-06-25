@@ -1,0 +1,49 @@
+name: "Notify Slack Deploy"
+description: "Send deploy notification to Slack with properly escaped user content"
+
+inputs:
+  token:
+    description: "Slack bot token"
+    required: true
+  channel_id:
+    description: "Slack channel ID"
+    required: true
+  header:
+    description: "Header text for the message"
+    required: true
+  result:
+    description: "'success' or 'failure'"
+    required: true
+  pr_url:
+    description: "PR URL"
+    required: true
+  pr_number:
+    description: "PR number"
+    required: true
+  pr_title:
+    description: "PR title"
+    required: true
+  slack_user_id:
+    description: "Slack user ID to mention on failure"
+    required: false
+    default: ""
+
+runs:
+  using: "composite"
+  steps:
+    - name: Send Slack notification
+      uses: slackapi/slack-github-action@v2.1.1
+      with:
+        method: chat.postMessage
+        token: ${{ inputs.token }}
+        payload: |
+          channel: ${{ inputs.channel_id }}
+          blocks:
+          - type: header
+            text:
+              type: plain_text
+              text: ${{ toJson(inputs.header) }}
+          - type: section
+            text:
+              type: mrkdwn
+              text: ${{ inputs.result == 'success' && toJson(format('✅ Deployet <{0}|PR#{1}> - {2}', inputs.pr_url, inputs.pr_number, inputs.pr_title)) || toJson(format('❌ Deploy feilet for <{0}|PR#{1}> - {2}{3}', inputs.pr_url, inputs.pr_number, inputs.pr_title, inputs.slack_user_id != '' && format(' cc <@{0}>', inputs.slack_user_id) || '')) }}
