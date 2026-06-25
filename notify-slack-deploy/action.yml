@@ -11,6 +11,10 @@ inputs:
   header:
     description: "Header text for the message"
     required: true
+  environment:
+    description: "Deployment environment name shown in the header, e.g. prod or stg"
+    required: false
+    default: ""
   result:
     description: "'success' or 'failure'"
     required: true
@@ -42,7 +46,7 @@ runs:
           - type: header
             text:
               type: plain_text
-              text: ${{ toJson(inputs.header) }}
+              text: ${{ toJson(inputs.environment != '' && format('{0} {1}', inputs.header, startsWith(inputs.environment, 'prod') && format('🌍 {0}', inputs.environment) || format('🎭 {0}', inputs.environment)) || inputs.header) }}
           - type: section
             text:
               type: mrkdwn

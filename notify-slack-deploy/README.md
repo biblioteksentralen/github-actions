@@ -12,6 +12,7 @@ Send deploy success/failure notifications to Slack. PR titles and other user-pro
     token: ${{ secrets.SLACK_BOT_TOKEN }}
     channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
     header: Dataplattform
+    environment: production
     result: success
     pr_url: ${{ steps.pr_info.outputs.url }}
     pr_number: ${{ steps.pr_info.outputs.number }}
@@ -24,6 +25,7 @@ Send deploy success/failure notifications to Slack. PR titles and other user-pro
     token: ${{ secrets.SLACK_BOT_TOKEN }}
     channel_id: ${{ secrets.SLACK_CHANNEL_ID }}
     header: Dataplattform
+    environment: production
     result: failure
     pr_url: ${{ steps.pr_info.outputs.url }}
     pr_number: ${{ steps.pr_info.outputs.number }}
