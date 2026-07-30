@@ -39,11 +39,13 @@ On failure, `slack_user_id` is optional. When set, the PR author is mentioned in
 
 Pass `environment` to distinguish staging from production:
 
-| Environment | Header | Success emoji |
-| --- | --- | --- |
-| `prod` / `production` (starts with `prod`) | `🌍 prod` | ✅ |
-| anything else (e.g. `stg`, `staging`) | `🎭 stg` | 🟡 |
-| omitted | header only | ✅ |
+| Environment | Prefix | Success emoji | Failure emoji |
+| --- | --- | --- | --- |
+| `prod` / `production` (starts with `prod`) | `{header} prod` | 🟢 | 🚨 |
+| anything else (e.g. `stg`, `staging`) | `{header} stg` | 🟡 | 🚨 |
+| omitted | `{header}` | 🟢 | 🚨 |
+
+Everything is sent as a single one-line section block, e.g. `Dataplattform production 🟢 Deployet <url|PR#42> - Title`.
 
 ### Inputs
 
