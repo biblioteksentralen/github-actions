@@ -35,6 +35,16 @@ Send deploy success/failure notifications to Slack. PR titles and other user-pro
 
 On failure, `slack_user_id` is optional. When set, the PR author is mentioned in the message.
 
+### Environment styling
+
+Pass `environment` to distinguish staging from production:
+
+| Environment | Header | Success emoji |
+| --- | --- | --- |
+| `prod` / `production` (starts with `prod`) | `🌍 prod` | ✅ |
+| anything else (e.g. `stg`, `staging`) | `🎭 stg` | 🟡 |
+| omitted | header only | ✅ |
+
 ### Inputs
 
 See [action.yml](action.yml) for more details.
