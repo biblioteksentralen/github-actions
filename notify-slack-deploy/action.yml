@@ -9,10 +9,10 @@ inputs:
     description: "Slack channel ID"
     required: true
   header:
-    description: "Header text for the message"
+    description: "Prefix text for the message, e.g. service name"
     required: true
   environment:
-    description: "Deployment environment name shown in the header, e.g. prod or stg. Non-prod success uses 🟡 instead of ✅."
+    description: "Deployment environment name shown in the message, e.g. prod or stg. Non-prod success uses 🟡 instead of 🟢."
     required: false
     default: ""
   result:
@@ -43,11 +43,7 @@ runs:
         payload: |
           channel: ${{ inputs.channel_id }}
           blocks:
-          - type: header
-            text:
-              type: plain_text
-              text: ${{ toJson(inputs.environment != '' && format('{0} {1}', inputs.header, startsWith(inputs.environment, 'prod') && format('🌍 {0}', inputs.environment) || format('🎭 {0}', inputs.environment)) || inputs.header) }}
           - type: section
             text:
               type: mrkdwn
-              text: ${{ inputs.result == 'success' && toJson(format('{0} Deployet <{1}|PR#{2}> - {3}', (inputs.environment == '' || startsWith(inputs.environment, 'prod')) && '✅' || '🟡', inputs.pr_url, inputs.pr_number, inputs.pr_title)) || toJson(format('❌ Deploy feilet for <{0}|PR#{1}> - {2}{3}', inputs.pr_url, inputs.pr_number, inputs.pr_title, inputs.slack_user_id != '' && format(' cc <@{0}>', inputs.slack_user_id) || '')) }}
+              text: ${{ inputs.result == 'success' && toJson(format('{0} {1} Deployet <{2}|PR#{3}> - {4}', inputs.environment != '' && format('{0} {1}', inputs.header, inputs.environment) || inputs.header, (inputs.environment == '' || startsWith(inputs.environment, 'prod')) && '🟢' || '🟡', inputs.pr_url, inputs.pr_number, inputs.pr_title)) || toJson(format('{0} 🚨 Deploy feilet for <{1}|PR#{2}> - {3}{4}', inputs.environment != '' && format('{0} {1}', inputs.header, inputs.environment) || inputs.header, inputs.pr_url, inputs.pr_number, inputs.pr_title, inputs.slack_user_id != '' && format(' cc <@{0}>', inputs.slack_user_id) || '')) }}
