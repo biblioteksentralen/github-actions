@@ -42,6 +42,7 @@ runs:
         token: ${{ inputs.token }}
         payload: |
           channel: ${{ inputs.channel_id }}
+          unfurl_links: false
           blocks:
           - type: section
             text:
