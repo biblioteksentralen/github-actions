@@ -41,19 +41,19 @@ Pass `environment` to distinguish staging from production:
 
 | Environment | Name in message | Success emoji | Failure emoji |
 | --- | --- | --- | --- |
-| `prod` / `production` (starts with `prod`) | `{header} {environment}` | 🟢 | 🚨 |
-| anything else (e.g. `stg`, `staging`) | `{header} {environment}` | 🟡 | 🚨 |
+| `prod` / `production` (starts with `prod`) | `{header} ({environment})` | 🟢 | 🚨 |
+| anything else (e.g. `stg`, `staging`) | `{header} ({environment})` | 🟡 | 🚨 |
 | omitted | `{header}` | 🟢 | 🚨 |
 
 The message is a single section block over two lines: a bold status line, followed by the PR link and title. For example:
 
 ```
-🟢 *Deployet Dataplattform production*
+🟢 *Deployet Dataplattform (production)*
 <url|#42>: Title
 ```
 
 ```
-🚨 *Deploy feilet for Dataplattform production*
+🚨 *Deploy feilet for Dataplattform (production)*
 <url|#42>: Title cc <@U0123>
 ```
 

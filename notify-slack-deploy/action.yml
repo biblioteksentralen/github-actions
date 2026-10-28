@@ -53,7 +53,7 @@ runs:
           // Slack mrkdwn treats &, < and > as control characters
           const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-          const name = escape(ENVIRONMENT ? `${HEADER} ${ENVIRONMENT}` : HEADER)
+          const name = escape(ENVIRONMENT ? `${HEADER} (${ENVIRONMENT})` : HEADER)
           const pr = `<${PR_URL}|#${PR_NUMBER}>: ${escape(PR_TITLE)}`
 
           if (RESULT === 'success') {
