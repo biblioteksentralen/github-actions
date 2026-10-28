@@ -1,6 +1,6 @@
 # notify-slack-deploy
 
-Send deploy success/failure notifications to Slack. PR titles and other user-provided values are JSON-escaped so quotes and special characters do not break the payload.
+Send deploy success/failure notifications to Slack. PR titles and other user-provided values are JSON-escaped so quotes and special characters do not break the payload, and `&`, `<` and `>` are escaped so Slack shows them as text instead of treating them as formatting.
 
 ## Usage
 
@@ -54,7 +54,7 @@ The message is a single section block over two lines: a bold status line, follow
 
 ```
 🚨 *Deploy feilet for Dataplattform production*
-<url|#42> - Title cc <@U0123>
+<url|#42>: Title cc <@U0123>
 ```
 
 ### Inputs

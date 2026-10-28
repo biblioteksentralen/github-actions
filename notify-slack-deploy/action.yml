@@ -35,6 +35,34 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Build message
+      id: message
+      uses: actions/github-script@v9
+      env:
+        HEADER: ${{ inputs.header }}
+        ENVIRONMENT: ${{ inputs.environment }}
+        RESULT: ${{ inputs.result }}
+        PR_URL: ${{ inputs.pr_url }}
+        PR_NUMBER: ${{ inputs.pr_number }}
+        PR_TITLE: ${{ inputs.pr_title }}
+        SLACK_USER_ID: ${{ inputs.slack_user_id }}
+      with:
+        result-encoding: string
+        script: |
+          const { HEADER, ENVIRONMENT, RESULT, PR_URL, PR_NUMBER, PR_TITLE, SLACK_USER_ID } = process.env
+          // Slack mrkdwn treats &, < and > as control characters
+          const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+          const name = escape(ENVIRONMENT ? `${HEADER} ${ENVIRONMENT}` : HEADER)
+          const pr = `<${PR_URL}|#${PR_NUMBER}>: ${escape(PR_TITLE)}`
+
+          if (RESULT === 'success') {
+            const emoji = !ENVIRONMENT || ENVIRONMENT.startsWith('prod') ? '🟢' : '🟡'
+            return `${emoji} *Deployet ${name}*\n${pr}`
+          }
+          const cc = SLACK_USER_ID ? ` cc <@${SLACK_USER_ID}>` : ''
+          return `🚨 *Deploy feilet for ${name}*\n${pr}${cc}`
+
     - name: Send Slack notification
       uses: slackapi/slack-github-action@v4
       with:
@@ -47,4 +75,4 @@ runs:
           - type: section
             text:
               type: mrkdwn
-              text: ${{ inputs.result == 'success' && toJson(format('{0} *Deployet {1}*{5}<{2}|#{3}>: {4}', (inputs.environment == '' || startsWith(inputs.environment, 'prod')) && '🟢' || '🟡', inputs.environment != '' && format('{0} {1}', inputs.header, inputs.environment) || inputs.header, inputs.pr_url, inputs.pr_number, inputs.pr_title, fromJSON('"\n"'))) || toJson(format('🚨 *Deploy feilet for {0}*{5}<{1}|#{2}> - {3}{4}', inputs.environment != '' && format('{0} {1}', inputs.header, inputs.environment) || inputs.header, inputs.pr_url, inputs.pr_number, inputs.pr_title, inputs.slack_user_id != '' && format(' cc <@{0}>', inputs.slack_user_id) || '', fromJSON('"\n"'))) }}
+              text: ${{ toJson(steps.message.outputs.result) }}
