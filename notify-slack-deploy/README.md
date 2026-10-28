@@ -1,6 +1,6 @@
 # notify-slack-deploy
 
-Send deploy success/failure notifications to Slack. PR titles and other user-provided values are JSON-escaped so quotes and special characters do not break the payload.
+Send deploy success/failure notifications to Slack. PR titles and other user-provided values are JSON-escaped so quotes and special characters do not break the payload, and `&`, `<` and `>` are escaped so Slack shows them as text instead of treating them as formatting.
 
 ## Usage
 
@@ -39,13 +39,23 @@ On failure, `slack_user_id` is optional. When set, the PR author is mentioned in
 
 Pass `environment` to distinguish staging from production:
 
-| Environment | Prefix | Success emoji | Failure emoji |
+| Environment | Name in message | Success emoji | Failure emoji |
 | --- | --- | --- | --- |
-| `prod` / `production` (starts with `prod`) | `{header} prod` | 🟢 | 🚨 |
-| anything else (e.g. `stg`, `staging`) | `{header} stg` | 🟡 | 🚨 |
+| `prod` / `production` (starts with `prod`) | `{header} ({environment})` | 🟢 | 🚨 |
+| anything else (e.g. `stg`, `staging`) | `{header} ({environment})` | 🟡 | 🚨 |
 | omitted | `{header}` | 🟢 | 🚨 |
 
-Everything is sent as a single one-line section block, e.g. `Dataplattform production 🟢 Deployet <url|PR#42> - Title`.
+The message is a single section block over two lines: a bold status line, followed by the PR link and title. For example:
+
+```
+🟢 *Deployet Dataplattform (production)*
+<url|#42>: Title
+```
+
+```
+🚨 *Deploy feilet for Dataplattform (production)*
+<url|#42>: Title cc <@U0123>
+```
 
 ### Inputs
 
