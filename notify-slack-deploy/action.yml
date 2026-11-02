@@ -8,9 +8,6 @@ inputs:
   channel_id:
     description: "Slack channel ID"
     required: true
-  header:
-    description: "Prefix text for the message, e.g. service name"
-    required: true
   environment:
     description: "Deployment environment name shown in the message, e.g. prod or stg. Non-prod success uses 🟡 instead of 🟢."
     required: false
@@ -43,7 +40,6 @@ runs:
       id: message
       uses: actions/github-script@v9
       env:
-        HEADER: ${{ inputs.header }}
         ENVIRONMENT: ${{ inputs.environment }}
         RESULT: ${{ inputs.result }}
         PR_URL: ${{ inputs.pr_url }}
@@ -54,20 +50,20 @@ runs:
       with:
         result-encoding: string
         script: |
-          const { HEADER, ENVIRONMENT, RESULT, PR_URL, PR_NUMBER, PR_TITLE, SLACK_USER_ID, CONTEXT } = process.env
+          const { ENVIRONMENT, RESULT, PR_URL, PR_NUMBER, PR_TITLE, SLACK_USER_ID, CONTEXT } = process.env
           // Slack mrkdwn treats &, < and > as control characters
           const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
-          const name = escape(ENVIRONMENT ? `${HEADER} (${ENVIRONMENT})` : HEADER)
-          const pr = `<${PR_URL}|#${PR_NUMBER}>: ${escape(PR_TITLE)}`
+          const repo = process.env.GITHUB_REPOSITORY.split('/')[1]
+          const subject = `<${PR_URL}|${repo}#${PR_NUMBER}>${ENVIRONMENT ? `@${escape(ENVIRONMENT)}` : ''}: ${escape(PR_TITLE)}`
 
           let text
           if (RESULT === 'success') {
-            const emoji = !ENVIRONMENT || ENVIRONMENT.startsWith('prod') ? '🟢' : '🟡'
-            text = `${emoji} *Deployet ${name}*\n${pr}`
+            const icon = !ENVIRONMENT || ENVIRONMENT.startsWith('prod') ? '🟢' : '🟡'
+            text = `${icon} ${subject}`
           } else {
             const cc = SLACK_USER_ID ? ` cc <@${SLACK_USER_ID}>` : ''
-            text = `🚨 *Deploy feilet for ${name}*\n${pr}${cc}`
+            text = `🚨 *Deploy feilet:* ${subject}${cc}`
           }
 
           const blocks = [{ type: 'section', text: { type: 'mrkdwn', text } }]
