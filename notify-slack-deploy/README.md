@@ -49,12 +49,12 @@ The message is a single section block over two lines: a bold status line, follow
 
 ```
 🟢 *Deployet Dataplattform (production)*
-<url|#42>: Title
+<url|dataplattform#42>: Title
 ```
 
 ```
 🚨 *Deploy feilet for Dataplattform (production)*
-<url|#42>: Title cc <@U0123>
+<url|dataplattform#42>: Title cc <@U0123>
 ```
 
 ### Context
