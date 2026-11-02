@@ -57,6 +57,15 @@ The message is a single section block over two lines: a bold status line, follow
 <url|#42>: Title cc <@U0123>
 ```
 
+### Context
+
+Pass `context` to add a context block (small grey text) below the message, for example to list every deployed service when `header` only names some of them:
+
+```yaml
+    header: katt
+    context: "Deployet: katt, kfond-service, linked-data-api"
+```
+
 ### Inputs
 
 See [action.yml](action.yml) for more details.

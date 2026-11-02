@@ -31,6 +31,10 @@ inputs:
     description: "Slack user ID to mention on failure"
     required: false
     default: ""
+  context:
+    description: "Optional text shown in a context block below the message, e.g. the list of deployed services"
+    required: false
+    default: ""
 
 runs:
   using: "composite"
@@ -46,22 +50,31 @@ runs:
         PR_NUMBER: ${{ inputs.pr_number }}
         PR_TITLE: ${{ inputs.pr_title }}
         SLACK_USER_ID: ${{ inputs.slack_user_id }}
+        CONTEXT: ${{ inputs.context }}
       with:
         result-encoding: string
         script: |
-          const { HEADER, ENVIRONMENT, RESULT, PR_URL, PR_NUMBER, PR_TITLE, SLACK_USER_ID } = process.env
+          const { HEADER, ENVIRONMENT, RESULT, PR_URL, PR_NUMBER, PR_TITLE, SLACK_USER_ID, CONTEXT } = process.env
           // Slack mrkdwn treats &, < and > as control characters
           const escape = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
           const name = escape(ENVIRONMENT ? `${HEADER} (${ENVIRONMENT})` : HEADER)
           const pr = `<${PR_URL}|#${PR_NUMBER}>: ${escape(PR_TITLE)}`
 
+          let text
           if (RESULT === 'success') {
             const emoji = !ENVIRONMENT || ENVIRONMENT.startsWith('prod') ? '🟢' : '🟡'
-            return `${emoji} *Deployet ${name}*\n${pr}`
+            text = `${emoji} *Deployet ${name}*\n${pr}`
+          } else {
+            const cc = SLACK_USER_ID ? ` cc <@${SLACK_USER_ID}>` : ''
+            text = `🚨 *Deploy feilet for ${name}*\n${pr}${cc}`
           }
-          const cc = SLACK_USER_ID ? ` cc <@${SLACK_USER_ID}>` : ''
-          return `🚨 *Deploy feilet for ${name}*\n${pr}${cc}`
+
+          const blocks = [{ type: 'section', text: { type: 'mrkdwn', text } }]
+          if (CONTEXT) {
+            blocks.push({ type: 'context', elements: [{ type: 'mrkdwn', text: escape(CONTEXT) }] })
+          }
+          return JSON.stringify(blocks)
 
     - name: Send Slack notification
       uses: slackapi/slack-github-action@v4
@@ -71,8 +84,4 @@ runs:
         payload: |
           channel: ${{ inputs.channel_id }}
           unfurl_links: false
-          blocks:
-          - type: section
-            text:
-              type: mrkdwn
-              text: ${{ toJson(steps.message.outputs.result) }}
+          blocks: ${{ steps.message.outputs.result }}
